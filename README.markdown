@@ -16,6 +16,17 @@
         writing /Users/fukamachi/Programs/lib/cl-sample/t/hogehoge.lisp
     ;=> T
 
+## Parameter
+
+All parameters are optional.
+
+* `:name`: Project name. If this key isn't specified, the directory name will be used.
+* `:description`: Short description for the new project.
+* `:author`: Your name.
+* `:email`: Your e-mail address.
+* `:license`: License of the new project.
+* `:depends-on`: A list of dependency.
+
 ## Author
 
 * Eitarow Fukamachi (e.arrows@gmail.com)
