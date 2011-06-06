@@ -16,6 +16,20 @@
         writing /Users/fukamachi/Programs/lib/cl-sample/t/hogehoge.lisp
     ;=> T
 
+## What's the difference from other generator?
+
+1. Flexible templates
+
+CL-Project supports more parameters to embed, by using [CL-EMB](http://common-lisp.net/project/cl-emb/) to represent the skeleton files (See "cl-project/skeleton/").
+
+2. One package per one file style (Modern)
+
+Modern CL project should be in accordance with [some rules](http://labs.ariel-networks.com/cl-style-guide.html). For instance, one file must have one package in it.
+
+3. Recommends unit testing
+
+Modern projects should have some unit tests. CL-Project generates a system for unit testing, so you can begin writing an unit test as soon as the project is generated.
+
 ## Parameter
 
 All parameters are optional.
