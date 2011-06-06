@@ -42,7 +42,9 @@
   (setf *skeleton-parameters* params)
   (copy-directory
    *skeleton-directory*
-   pathname))
+   pathname)
+  (load (merge-pathnames (concatenate 'string (getf params :name) ".asd")
+                         pathname)))
 
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
