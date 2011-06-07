@@ -25,10 +25,10 @@
 
 (use-syntax annot-syntax)
 
-(defparameter *skeleton-directory*
-              #.(asdf:system-relative-pathname
-                 :cl-project
-                 #p"skeleton/"))
+(defvar *skeleton-directory*
+    #.(asdf:system-relative-pathname
+       :cl-project
+       #p"skeleton/"))
 
 (defvar *skeleton-parameters* nil)
 
@@ -39,12 +39,18 @@
   (sunless (getf params :name)
     (setf it
           (car (last (pathname-directory pathname)))))
-  (setf *skeleton-parameters* params)
-  (copy-directory
+  (generate-skeleton
    *skeleton-directory*
-   pathname)
+   pathname
+   :env params)
   (load (merge-pathnames (concatenate 'string (getf params :name) ".asd")
                          pathname)))
+
+@export
+(defun generate-skeleton (source-dir target-dir &key env)
+  "General skeleton generator."
+  (let ((*skeleton-parameters* env))
+    (copy-directory source-dir target-dir)))
 
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
@@ -72,8 +78,12 @@
                              (pathname-name source-path)
                              (getf *skeleton-parameters* :name))
                       :type (pathname-type source-path))))
-    (format t "~&writing ~A~%" target-path)
-    (with-open-file (stream target-path :direction :output :if-exists :supersede)
-      (write-sequence
-       (cl-emb:execute-emb source-path :env *skeleton-parameters*)
-       stream))))
+    (copy-file-to-file source-path target-path)))
+
+(defun copy-file-to-file (source-path target-path)
+  "Copy a file `source-path` to the `target-path`."
+  (format t "~&writing ~A~%" target-path)
+  (with-open-file (stream target-path :direction :output :if-exists :supersede)
+    (write-sequence
+     (cl-emb:execute-emb source-path :env *skeleton-parameters*)
+     stream)))
