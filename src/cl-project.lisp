@@ -25,6 +25,7 @@
 
 (use-syntax annot-syntax)
 
+@export
 (defvar *skeleton-directory*
     #.(asdf:system-relative-pathname
        :cl-project
