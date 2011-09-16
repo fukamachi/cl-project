@@ -44,4 +44,5 @@
                                :element-type 'character
                                :fill-pointer t)))
           (setf (fill-pointer seq) (read-sequence seq stream))
-          seq))))
+          seq)))
+  :in-order-to ((test-op (load-op cl-project-test))))

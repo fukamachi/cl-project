@@ -15,4 +15,5 @@
                :cl-test-more)
   :components ((:module "t"
                 :components
-                ((:file "<% @var name %>")))))
+                ((:file "<% @var name %>"))))
+  :perform (load-op :after (op c) (asdf:clear-system c)))

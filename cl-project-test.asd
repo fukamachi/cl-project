@@ -15,4 +15,5 @@
                :cl-test-more)
   :components ((:module "t"
                 :components
-                ((:file "cl-project")))))
+                ((:file "cl-project"))))
+  :perform (load-op :after (op c) (asdf:clear-system c)))

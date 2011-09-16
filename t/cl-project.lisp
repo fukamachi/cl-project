@@ -28,9 +28,7 @@
 (ok (cl-fad:directory-exists-p *sample-project-directory*)
     "Sample project was generated")
 
-(load (merge-pathnames "cl-project-sample.asd" *sample-project-directory*))
-
-(ok (asdf:load-system (asdf:find-system :cl-project-sample))
+(ok (asdf:load-system :cl-project-sample)
     "Can load the new project")
 
 (cl-fad:delete-directory-and-files *sample-project-directory*)

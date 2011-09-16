@@ -45,6 +45,8 @@
    pathname
    :env params)
   (load (merge-pathnames (concatenate 'string (getf params :name) ".asd")
+                         pathname))
+  (load (merge-pathnames (concatenate 'string (getf params :name) "-test.asd")
                          pathname)))
 
 @export
