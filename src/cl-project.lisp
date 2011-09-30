@@ -16,14 +16,10 @@
                 :scan
                 :regex-replace-all)
   (:import-from :cl-emb
-                :execute-emb)
-  (:import-from :cl-syntax
-                :use-syntax)
-  (:import-from :cl-syntax-annot
-                :annot-syntax))
+                :execute-emb))
 (in-package :cl-project)
 
-(use-syntax annot-syntax)
+(cl-syntax:use-syntax :annot)
 
 @export
 (defvar *skeleton-directory*
