@@ -30,9 +30,10 @@
 (defvar *skeleton-parameters* nil)
 
 @export
-(defun make-project (pathname &rest params)
+(defun make-project (pathname &rest params &key name description author email license depends-on &allow-other-keys)
   "Generate a skeleton.
 `pathname' must be a pathname."
+  (declare (ignorable name description author email license depends-on))
   (sunless (getf params :name)
     (setf it
           (car (last (pathname-directory pathname)))))
