@@ -11,9 +11,11 @@
   (:use :cl
         :anaphora)
   (:import-from :cl-fad
+                :directory-exists-p
                 :list-directory)
   (:import-from :cl-ppcre
                 :scan
+                :regex-replace
                 :regex-replace-all)
   (:import-from :cl-emb
                 :execute-emb))
@@ -30,21 +32,26 @@
 (defvar *skeleton-parameters* nil)
 
 @export
-(defun make-project (pathname &rest params &key name description author email license depends-on &allow-other-keys)
+(defun make-project (path &rest params &key name description author email license depends-on &allow-other-keys)
   "Generate a skeleton.
-`pathname' must be a pathname."
+`path' must be a pathname or a string."
   (declare (ignorable name description author email license depends-on))
+  (when (directory-exists-p path)
+    (error (format nil "~A: Directory exists" path)))
+  ;; Ensure `path' ends with a slash(/).
+  (setf path
+        (pathname (ppcre:regex-replace "/?$" (namestring path) "/")))
   (sunless (getf params :name)
     (setf it
-          (car (last (pathname-directory pathname)))))
+          (car (last (pathname-directory path)))))
   (generate-skeleton
    *skeleton-directory*
-   pathname
+   path
    :env params)
   (load (merge-pathnames (concatenate 'string (getf params :name) ".asd")
-                         pathname))
+                         path))
   (load (merge-pathnames (concatenate 'string (getf params :name) "-test.asd")
-                         pathname)))
+                         path)))
 
 @export
 (defun generate-skeleton (source-dir target-dir &key env)

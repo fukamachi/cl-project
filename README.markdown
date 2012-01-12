@@ -2,7 +2,7 @@
 
 ## Usage
 
-    (cl-project:make-project #p"lib/cl-sample
+    (cl-project:make-project #p"lib/cl-sample/"
       :author "Eitarow Fukamachi"
       :email "e.arrows@gmail.com"
       :license "LLGPL"
