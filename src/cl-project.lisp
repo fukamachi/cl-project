@@ -12,10 +12,9 @@
         :anaphora)
   (:import-from :cl-fad
                 :directory-exists-p
+                :pathname-as-directory
                 :list-directory)
   (:import-from :cl-ppcre
-                :scan
-                :regex-replace
                 :regex-replace-all)
   (:import-from :cl-emb
                 :execute-emb))
@@ -36,11 +35,13 @@
   "Generate a skeleton.
 `path' must be a pathname or a string."
   (declare (ignorable name description author email license depends-on))
+
   (when (directory-exists-p path)
     (error (format nil "~A: Directory exists" path)))
+
   ;; Ensure `path' ends with a slash(/).
-  (setf path
-        (pathname (ppcre:regex-replace "/?$" (namestring path) "/")))
+  (setf path (fad:pathname-as-directory path))
+
   (sunless (getf params :name)
     (setf it
           (car (last (pathname-directory path)))))
