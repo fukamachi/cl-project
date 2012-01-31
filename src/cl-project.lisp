@@ -36,9 +36,6 @@
 `path' must be a pathname or a string."
   (declare (ignorable name description author email license depends-on))
 
-  (when (directory-exists-p path)
-    (error (format nil "~A: Directory exists" path)))
-
   ;; Ensure `path' ends with a slash(/).
   (setf path (fad:pathname-as-directory path))
 
