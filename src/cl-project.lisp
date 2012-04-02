@@ -68,6 +68,8 @@
           do (copy-directory
                   file
                   (concatenate 'string
+                               (aif (pathname-device target-dir)
+                                    (format nil "~A:" it))
                                (directory-namestring target-dir)
                                (car (last (pathname-directory file))) "/"))
         else
@@ -77,6 +79,7 @@
 (defun copy-file-to-dir (source-path target-dir)
   "Copy a file to target directory."
   (let ((target-path (make-pathname
+                      :device (pathname-device target-dir)
                       :directory (directory-namestring target-dir)
                       :name (regex-replace-all
                              "skeleton"
