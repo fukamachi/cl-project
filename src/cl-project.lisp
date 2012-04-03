@@ -68,8 +68,8 @@
           do (copy-directory
                   file
                   (concatenate 'string
-                               (aif (pathname-device target-dir)
-                                    (format nil "~A:" it))
+                               (awhen (pathname-device target-dir)
+                                 (format nil "~A:" it))
                                (directory-namestring target-dir)
                                (car (last (pathname-directory file))) "/"))
         else
