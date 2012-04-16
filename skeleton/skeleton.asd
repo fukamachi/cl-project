@@ -6,10 +6,10 @@
 (when (or (getf env :description)
           (getf env :author))
 %>
-#|
-<% @if description %>  <% @var description %>
-
-<% @endif %><% @if author %>  Author: <% @var author %><% @if email %> (<% @var email %>)<% @endif %><% @endif %>
+#|<% @if description %>
+  <% @var description %><% @endif %><% @if author %>
+<% (when (and (getf env :description) (getf env :author)) %>
+<% ) %>  Author: <% @var author %><% @if email %> (<% @var email %>)<% @endif %><% @endif %>
 |#
 <% ) %>
 (in-package :cl-user)
