@@ -81,7 +81,7 @@
                       :name (regex-replace-all
                              "skeleton"
                              (pathname-name source-path)
-                             (getf *skeleton-parameters* :name))
+                             (string-downcase (getf *skeleton-parameters* :name)))
                       :type (pathname-type source-path))))
     (copy-file-to-file source-path target-path)))
 
