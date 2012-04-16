@@ -60,9 +60,6 @@
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
   (ensure-directories-exist target-dir)
-  #+allegro
-  (excl:copy-directory source-dir target-dir :quiet t)
-  #-allegro
   (loop for file in (cl-fad:list-directory source-dir)
         if (cl-fad:directory-pathname-p file)
           do (copy-directory
