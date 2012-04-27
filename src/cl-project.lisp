@@ -77,7 +77,7 @@
   "Copy a file to target directory."
   (let ((target-path (make-pathname
                       :device (pathname-device target-dir)
-                      :directory (directory-namestring target-dir)
+                      :directory (pathname-directory target-dir)
                       :name (regex-replace-all
                              "skeleton"
                              (pathname-name source-path)
