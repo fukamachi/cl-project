@@ -9,15 +9,18 @@
 (in-package :cl-user)
 (defpackage cl-project
   (:use :cl
-        :anaphora)
-  (:import-from :cl-fad
+	:annot.doc)
+  (:import-from :osicat
                 :directory-exists-p
+		:directory-pathname-p
                 :pathname-as-directory
                 :list-directory)
   (:import-from :cl-ppcre
                 :regex-replace-all)
   (:import-from :cl-emb
-                :execute-emb))
+                :execute-emb)
+  (:import-from :cl-project.git
+		:make-git-repo))
 (in-package :cl-project)
 
 (cl-syntax:use-syntax :annot)
@@ -30,25 +33,40 @@
 
 (defvar *skeleton-parameters* nil)
 
+(defun ->string (desig)
+  (etypecase desig
+    (string desig)
+    (symbol (symbol-name desig))))
+
 @export
-(defun make-project (path &rest params &key name description author email license depends-on &allow-other-keys)
+(defun make-project (path &rest params
+		     &key name description author
+		     email license depends-on git &allow-other-keys)
   "Generate a skeleton.
-`path' must be a pathname or a string."
+`path' : a PATHNAME or a STRING.
+`name', `license' : a STRING-DESIGNATOR.
+`description', `author', `email' : a STRING.
+`git' : a BOOLEAN or a STRING. when non-nil, creates a git repository in the folder. If it is a STRING indicating a git URL, it adds that repo as the origin."  
   (declare (ignorable name description author email license depends-on))
 
   ;; Ensure `path' ends with a slash(/).
-  (setf path (fad:pathname-as-directory path))
+  (setf path (pathname-as-directory path))
 
-  (sunless (getf params :name)
-    (setf it
-          (car (last (pathname-directory path)))))
+  ;; ensure that PARAMS have the correct values
+  (let ((str (if name
+		 (string-downcase (->string name))
+		 (car (last (pathname-directory path))))))
+    (setf (getf params :name) str name str))
+  
   (generate-skeleton
    *skeleton-directory*
    path
    :env params)
-  (load (merge-pathnames (concatenate 'string (getf params :name) ".asd")
+  (when git
+    (make-git-repo path git))
+  (load (merge-pathnames (concatenate 'string name ".asd")
                          path))
-  (load (merge-pathnames (concatenate 'string (getf params :name) "-test.asd")
+  (load (merge-pathnames (concatenate 'string name "-test.asd")
                          path)))
 
 @export
@@ -59,36 +77,43 @@
 
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
-  (ensure-directories-exist target-dir)
-  (loop for file in (cl-fad:list-directory source-dir)
-        if (cl-fad:directory-pathname-p file)
-          do (copy-directory
-                  file
-                  (concatenate 'string
-                               (awhen (pathname-device target-dir)
-                                 (format nil "~A:" it))
-                               (directory-namestring target-dir)
-                               (car (last (pathname-directory file))) "/"))
-        else
-          do (copy-file-to-dir file target-dir))
+  (ensure-directories-exist target-dir)				  
+  (loop for file in (list-directory source-dir)
+     if (directory-pathname-p file)
+     do (copy-directory
+	 file
+	 (concatenate 'string
+		      (let ((it (pathname-device target-dir)))
+			(format nil "~A:" it))
+		      (directory-namestring target-dir)
+		      (car (last (pathname-directory file))) "/"))
+     else
+     do (copy-file-to-dir file target-dir))
   t)
+
+(defun make-project-target-pathname (source-path target-dir name)
+  (make-pathname
+   :device (pathname-device target-dir)
+   :directory (pathname-directory target-dir)
+   :name (regex-replace-all
+	  "skeleton"
+	  (pathname-name source-path)
+	  (string-downcase name))
+   :type (pathname-type source-path)))
 
 (defun copy-file-to-dir (source-path target-dir)
   "Copy a file to target directory."
-  (let ((target-path (make-pathname
-                      :device (pathname-device target-dir)
-                      :directory (pathname-directory target-dir)
-                      :name (regex-replace-all
-                             "skeleton"
-                             (pathname-name source-path)
-                             (string-downcase (getf *skeleton-parameters* :name)))
-                      :type (pathname-type source-path))))
-    (copy-file-to-file source-path target-path)))
+  (copy-file-to-file
+   source-path
+   (make-project-target-pathname
+    source-path target-dir (getf *skeleton-parameters* :name))))
 
 (defun copy-file-to-file (source-path target-path)
   "Copy a file `source-path` to the `target-path`."
   (format t "~&writing ~A~%" target-path)
-  (with-open-file (stream target-path :direction :output :if-exists :supersede)
+  (with-open-file (stream target-path
+			  :direction :output
+			  :if-exists :supersede)
     (write-sequence
      (cl-emb:execute-emb source-path :env *skeleton-parameters*)
      stream)))

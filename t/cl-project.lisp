@@ -8,29 +8,36 @@
   (:use :cl
         :cl-project
         :cl-test-more)
-  (:import-from :cl-fad
-                :directory-exists-p
-                :delete-directory-and-files))
+  (:import-from :osicat
+				:file-exists-p
+				:directory-exists-p
+				:delete-directory-and-files)
+  (:import-from :inferior-shell :run/s))
 (in-package :cl-project-test)
 
-(plan 2)
+(plan 3)
 
 (defvar *sample-project-directory*
     (asdf:system-relative-pathname
      :cl-project
      #p"t/cl-project-sample/"))
 
-(when (cl-fad:file-exists-p *sample-project-directory*)
-  (cl-fad:delete-directory-and-files *sample-project-directory*))
+(delete-directory-and-files 
+ *sample-project-directory*
+ :if-does-not-exist :ignore)
 
-(cl-project:make-project *sample-project-directory*)
+(cl-project:make-project *sample-project-directory* :git t)
 
-(ok (cl-fad:directory-exists-p *sample-project-directory*)
+(ok (directory-exists-p *sample-project-directory*)
     "Sample project was generated")
 
 (ok (asdf:load-system :cl-project-sample)
     "Can load the new project")
 
-(cl-fad:delete-directory-and-files *sample-project-directory*)
+(ok (directory-exists-p 
+	 (merge-pathnames
+	  *sample-project-directory* ".git/"))
+    "git repos initialized")
+(delete-directory-and-files *sample-project-directory*)
 
 (finalize)
