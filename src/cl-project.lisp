@@ -17,6 +17,10 @@
                 :list-directory)
   (:import-from :cl-ppcre
                 :regex-replace-all)
+  (:import-from :ql-impl-util
+                :init-file-name)
+  (:import-from :inferior-shell
+                :run)
   (:import-from :cl-emb
                 :execute-emb)
   (:import-from :cl-project.git
@@ -26,10 +30,17 @@
 (cl-syntax:use-syntax :annot)
 
 @export
+@doc "A pathname to the official skeleton."
+(defvar *official-skeleton*
+  #.(asdf:system-relative-pathname
+     :cl-project
+     #p"skeleton/"))
+
+@export
+@doc "Specifies the directory of a user-defined skelton. Defaulted to
+the `skeleton/' directory in the :CL-PROJECT system directory."
 (defvar *skeleton-directory*
-    #.(asdf:system-relative-pathname
-       :cl-project
-       #p"skeleton/"))
+  *official-skeleton*)
 
 (defvar *skeleton-parameters* nil)
 
@@ -77,14 +88,15 @@
 
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
-  (ensure-directories-exist target-dir)				  
+  (ensure-directories-exist target-dir :verbose t)
   (loop for file in (list-directory source-dir)
      if (directory-pathname-p file)
      do (copy-directory
 	 file
 	 (concatenate 'string
-		      (let ((it (pathname-device target-dir)))
-			(format nil "~A:" it))
+		      (let ((device (pathname-device target-dir)))
+			(when device
+			  (format nil "~A:" device)))
 		      (directory-namestring target-dir)
 		      (car (last (pathname-directory file))) "/"))
      else
@@ -117,3 +129,54 @@
     (write-sequence
      (cl-emb:execute-emb source-path :env *skeleton-parameters*)
      stream)))
+
+@export
+@doc "Copies the official skeleton to the specified directory
+and interectively adds some scripts to the initialization file such as \".sbclrc\".
+The scripts, shortly, do (setf dir *skeleton-directory*) .
+
+Useful when you want to create a user-defined skeleton.
+
+Usage: (make-skeleton #p\"path/to/your/skeleton/\")
+"
+(defun make-skeleton (path)
+  (setf path (pathname-as-directory path))
+  (ensure-directories-exist path :verbose t)
+  (run `(cp -r ,*official-skeleton* ,path) :show t)
+  (let* ((skeleton (merge-pathnames "skeleton" path))
+	 (init (merge-pathnames
+		(init-file-name)
+		(user-homedir-pathname)))
+	 (old (merge-pathnames (format nil "~a.old" (init-file-name))
+			       (user-homedir-pathname)))
+	 (form `(progn
+		  (ql:quickload :cl-project)
+		  (setf (symbol-value
+			 (find-symbol "*SKELETON-DIRECTORY*"
+				      (FIND-PACKAGE :cl-project)))
+			,skeleton)))
+	 (*print-escape* t))
+    (when (yes-or-no-p "Created a skeleton directory at ~w .
+In order to use this skeleton by default,
+add to the init file ~w the following:
+
+~w
+
+Be sure that the init file is already configured
+so that it loads quicklisp. (asdf-install is obsoleted.)
+If you don't have quicklisp installed, go http://www.quicklisp.org/beta/ .
+
+I can add the above code automatically.
+The old init file will be renamed as ~w .
+Would you mind if I do it for you?"
+		       skeleton
+		       init
+		       form
+		       old)
+      (run `(cp ,init ,old) :show t)
+      (with-open-file (s init
+			 :direction :output
+			 :if-does-not-exist :create
+			 :if-exists :append)
+	(terpri s)
+	(write form :stream s)))))

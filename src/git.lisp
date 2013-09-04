@@ -11,8 +11,10 @@
 @doc "create git repo in a path. add the remote origin if possible."
 (defun make-git-repo (path origin-path)
   (ensure-directories-exist path)
-  (run (format nil "git init ~a" path)
-	   :output *standard-output*)
+  (run `(git init ,path)
+       :output *standard-output*)
   (when (stringp origin-path)
-	(run (format nil "cd ~a;git remote add origin ~a" path origin-path)
-		 :output *standard-output*)))
+    (run `(progn (cd ,path)
+		 (git remote add origin ,origin-path))
+	 :show *standard-output*
+	 :output *standard-output*)))
