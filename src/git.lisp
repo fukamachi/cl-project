@@ -15,6 +15,6 @@
        :output *standard-output*)
   (when (stringp origin-path)
     (run `(progn (cd ,path)
-		 (git remote add origin ,origin-path))
-	 :show *standard-output*
-	 :output *standard-output*)))
+                 (git remote add origin ,origin-path))
+         :show *standard-output*
+         :output *standard-output*)))

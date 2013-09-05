@@ -9,10 +9,10 @@
 (in-package :cl-user)
 (defpackage cl-project
   (:use :cl
-	:annot.doc)
+        :annot.doc)
   (:import-from :osicat
                 :directory-exists-p
-		:directory-pathname-p
+                :directory-pathname-p
                 :pathname-as-directory
                 :list-directory)
   (:import-from :cl-ppcre
@@ -22,7 +22,7 @@
   (:import-from :cl-emb
                 :execute-emb)
   (:import-from :cl-project.git
-		:make-git-repo))
+                :make-git-repo))
 (in-package :cl-project)
 
 (cl-syntax:use-syntax :annot)
@@ -49,8 +49,8 @@ the `skeleton/' directory in the :CL-PROJECT system directory."
 
 @export
 (defun make-project (path &rest params
-		     &key name description author
-		     email license depends-on git &allow-other-keys)
+                     &key name description author
+                     email license depends-on git &allow-other-keys)
   "Generate a skeleton.
 `path' : a PATHNAME or a STRING.
 `name', `license' : a STRING-DESIGNATOR.
@@ -63,8 +63,8 @@ the `skeleton/' directory in the :CL-PROJECT system directory."
 
   ;; ensure that PARAMS have the correct values
   (let ((str (if name
-		 (string-downcase (->string name))
-		 (car (last (pathname-directory path))))))
+                 (string-downcase (->string name))
+                 (car (last (pathname-directory path))))))
     (setf (getf params :name) str name str))
   
   (generate-skeleton
@@ -90,13 +90,13 @@ the `skeleton/' directory in the :CL-PROJECT system directory."
   (loop for file in (list-directory source-dir)
      if (directory-pathname-p file)
      do (copy-directory
-	 file
-	 (concatenate 'string
-		      (let ((device (pathname-device target-dir)))
-			(when device
-			  (format nil "~A:" device)))
-		      (directory-namestring target-dir)
-		      (car (last (pathname-directory file))) "/"))
+         file
+         (concatenate 'string
+                      (let ((device (pathname-device target-dir)))
+                        (when device
+                          (format nil "~A:" device)))
+                      (directory-namestring target-dir)
+                      (car (last (pathname-directory file))) "/"))
      else
      do (copy-file-to-dir file target-dir))
   t)
@@ -106,9 +106,9 @@ the `skeleton/' directory in the :CL-PROJECT system directory."
    :device (pathname-device target-dir)
    :directory (pathname-directory target-dir)
    :name (regex-replace-all
-	  "skeleton"
-	  (pathname-name source-path)
-	  (string-downcase name))
+          "skeleton"
+          (pathname-name source-path)
+          (string-downcase name))
    :type (pathname-type source-path)))
 
 (defun copy-file-to-dir (source-path target-dir)
@@ -122,8 +122,8 @@ the `skeleton/' directory in the :CL-PROJECT system directory."
   "Copy a file `source-path` to the `target-path`."
   (format t "~&writing ~A~%" target-path)
   (with-open-file (stream target-path
-			  :direction :output
-			  :if-exists :supersede)
+                          :direction :output
+                          :if-exists :supersede)
     (write-sequence
      (cl-emb:execute-emb source-path :env *skeleton-parameters*)
      stream)))
@@ -142,35 +142,35 @@ Usage: (make-skeleton #p\"path/to/your/skeleton/\")
   (ensure-directories-exist path :verbose t)
   (run `(cp -r ,*official-skeleton* ,path) :show t)
   (let* ((skeleton (merge-pathnames "skeleton" path))
-	 (init-file-name
-	  #+allegro ".clinit.cl"
-	  #+abcl ".abclrc"
-	  #+(and ccl windows) "ccl-init.lisp"
-	  #+(and ccl (not windows)) ".ccl-init.lisp"
-	  #+clisp ".clisprc.lisp"
-	  #+ecl		    ".eclrc"
-	  #+mkcl	    ".mkclrc"
-	  #+sbcl	    ".sbclrc"
-	  #+lispworks	    ".lispworks"
-	  #+cmucl	    ".cmucl-init.lisp"
-	  #+scl	    ".scl-init.lisp"
-	  #-(or cmucl scl sbcl allegro clisp lispworks ecl abcl ccl mkcl) nil)
-	 (form `(progn
-		  (ql:quickload :cl-project)
-		  (setf (symbol-value
-			 (find-symbol "*SKELETON-DIRECTORY*"
-				      (FIND-PACKAGE :cl-project)))
-			,skeleton))))
+         (init-file-name
+          #+allegro ".clinit.cl"
+          #+abcl ".abclrc"
+          #+(and ccl windows) "ccl-init.lisp"
+          #+(and ccl (not windows)) ".ccl-init.lisp"
+          #+clisp ".clisprc.lisp"
+          #+ecl             ".eclrc"
+          #+mkcl            ".mkclrc"
+          #+sbcl            ".sbclrc"
+          #+lispworks       ".lispworks"
+          #+cmucl           ".cmucl-init.lisp"
+          #+scl     ".scl-init.lisp"
+          #-(or cmucl scl sbcl allegro clisp lispworks ecl abcl ccl mkcl) nil)
+         (form `(progn
+                  (ql:quickload :cl-project)
+                  (setf (symbol-value
+                         (find-symbol "*SKELETON-DIRECTORY*"
+                                      (FIND-PACKAGE :cl-project)))
+                        ,skeleton))))
     (format t "Created a skeleton directory at ~w ." 
-	    skeleton)
+            skeleton)
     (if init-file-name
-	(let ((init (merge-pathnames
-		     init-file-name
-		     (user-homedir-pathname)))
-	      (old (merge-pathnames
-		    (format nil "~a.old" init-file-name)
-		    (user-homedir-pathname))))
-	  (when (yes-or-no-p "
+        (let ((init (merge-pathnames
+                     init-file-name
+                     (user-homedir-pathname)))
+              (old (merge-pathnames
+                    (format nil "~a.old" init-file-name)
+                    (user-homedir-pathname))))
+          (when (yes-or-no-p "
 In order to use this skeleton by default,
 add to the init file ~w the following:
 
@@ -183,18 +183,18 @@ If you don't have quicklisp installed, go http://www.quicklisp.org/beta/ .
 I can add the above code automatically.
 The old init file will be renamed as ~w .
 Would you mind if I do it for you?"
-			     init
-			     form
-			     old)
-	    (run `(cp ,init ,old) :show t)
-	    (with-open-file (s init
-			       :direction :output
-			       :if-does-not-exist :create
-			       :if-exists :append)
-	      (terpri s)
-	      (write form :stream s))))
-	
-	(format t "
+                             init
+                             form
+                             old)
+            (run `(cp ,init ,old) :show t)
+            (with-open-file (s init
+                               :direction :output
+                               :if-does-not-exist :create
+                               :if-exists :append)
+              (terpri s)
+              (write form :stream s))))
+        
+        (format t "
 In order to use this skeleton by default,
 add to the init file (failed to auto-detect) the following:
 
@@ -203,4 +203,4 @@ add to the init file (failed to auto-detect) the following:
 Be sure that the init file is already configured
 so that it loads quicklisp. (asdf-install is obsoleted.)
 If you don't have quicklisp installed, go http://www.quicklisp.org/beta/ ."
-		form))))
+                form))))
