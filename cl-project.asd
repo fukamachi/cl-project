@@ -25,7 +25,6 @@
 	       :iterate
 	       :inferior-shell
 	       :osicat
-	       :quicklisp
                :cl-emb
                :cl-ppcre
                :cl-annot
