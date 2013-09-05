@@ -2,6 +2,19 @@
 
 ## Usage
 
+
+## Dependencies
+This library is at least tested on implementation listed below:
+
++ <%= (lisp-implementation-type) %> <%= (lisp-implementation-version)
+%> on <%= (machine-type) %> <%= (software-type) %> <%=
+(software-version) %> (author's environment)
+
+Also, it depends on the following libraries:
+<% @if depends-on %><% @loop depends-on %>
++ <%= env %><%= (handler-case (concatenate 'string " by *" (asdf:system-author (asdf:find-system env)) "*") (error (c) (declare (ignore c)) "")) %> :
+    <%= (handler-case (asdf:system-description (asdf:find-system env)) (error (c) (declare (ignore c)) "")) %><% @endloop %><% @endif %>
+
 ## Installation
 <% @if author %>
 ## Author

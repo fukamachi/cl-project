@@ -22,16 +22,21 @@
   :author "Eitarow Fukamachi"
   :license "LLGPL"
   :depends-on (:anaphora
+	       :iterate
+	       :inferior-shell
+	       :osicat
                :cl-emb
-               :cl-fad
                :cl-ppcre
                :cl-annot
                :cl-syntax
                :cl-syntax-annot
-               :local-time)
+	       :local-time)
   :components ((:module "src"
-                :components
-                ((:file "cl-project"))))
+			:serial t
+			:components
+			((:file "git")
+			 (:file "cl-project")
+			 (:file "interactive"))))
   :description "Generate a skeleton for modern project"
   :long-description
   #.(with-open-file (stream (merge-pathnames
