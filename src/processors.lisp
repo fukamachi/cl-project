@@ -100,6 +100,10 @@
 (defmethod default-values-for append ((p package-file-as-package-mixin))
   `((:package-filename . :package)))
 
+(defclass package-file-as-packages-mixin () ())
+(defmethod default-values-for append ((p package-file-as-packages-mixin))
+  `((:package-filename . :packages)))
+
 
 (defclass asdf3-mixin () ())
 (defmethod default-values-for append ((p asdf3-mixin))
@@ -121,6 +125,16 @@
                                  ,(format nil "(fiveam:run! :~a)" (getp :name))))
                           (asdf:clear-system c))))))
 
+(defclass eos-mixin () ())
+(defmethod default-values-for append ((p eos-mixin))
+  `((:test-suite . "eos")
+    (:test-template . "includes/fiveam")
+    (:test-command . ,(delay
+                       `(progn
+                          (eval (read-from-string
+                                 ,(format nil "(eos:run! :~a)" (getp :name))))
+                          (asdf:clear-system c))))))
+
 (defclass default-processor (processor
                              markdown-readme-mixin
                              src-dir-mixin
@@ -129,6 +143,24 @@
                              cl-test-more-mixin
                              package-file-as-project-mixin)
   ())
+
+(defclass modified-processor (processor
+                              org-readme-mixin
+                              src-dir-mixin
+                              t-dir-mixin
+                              test-package-dotted-mixin
+                              fiveam-mixin
+                              package-file-as-package-mixin)
+  ())
+
+(defclass optima-like-processor (processor
+                                 markdown-readme-mixin
+                                 src-dir-mixin
+                                 test-dir-mixin
+                                 test-package-dotted-mixin
+                                 eos-mixin
+                                 package-file-as-packages-mixin))
+
 
 ;; (defclass interactive-processor (processor)
 ;;   ())
