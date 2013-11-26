@@ -42,5 +42,5 @@
                                :fill-pointer t)))
           (setf (fill-pointer seq) (read-sequence seq stream))
           seq)))
-  <% @endif readme %>
+  <% @endif %>
   :in-order-to ((test-op (load-op <% @var test-name %>))))

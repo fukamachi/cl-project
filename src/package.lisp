@@ -2,6 +2,8 @@
 (defpackage cl-project
   (:use :cl
         :anaphora)
+  (:import-from :alexandria
+                :once-only)
   (:import-from :cl-fad
                 :directory-exists-p
                 :pathname-as-directory

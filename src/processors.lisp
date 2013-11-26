@@ -4,11 +4,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; utility macros
 
+(defmacro delay (&body body)
+  `(lambda () ,@body))
+(defmacro force (thing)
+  (once-only (thing)
+    `(if (functionp ,thing)
+         (funcall ,thing)
+         ,thing)))
+
 (defmacro setp (key value)
   `(progn (setf (getf *parameters* ,key) ,value)
           *parameters*))
 (defmacro getp (key)
-  `(getf *parameters* ,key))
+  `(force (getf *parameters* ,key)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; generic function
@@ -31,8 +39,8 @@
 
 (defmethod default-values-for append ((processor processor))
   `((:skeleton . ,*default-skeleton-directory*)
-    (:author . ,(lambda () (string-right-trim '(#\Space #\Newline) (shell-command "whoami"))))
-    (:name . ,(lambda () (car (last (pathname-directory (getp :path))))))
+    (:author . ,(delay (string-right-trim '(#\Space #\Newline) (shell-command "whoami"))))
+    (:name . ,(delay (car (last (pathname-directory (getp :path))))))
     (:depends-on . ,*default-dependency*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,39 +62,44 @@
 (defmethod default-values-for append ((p org-readme-mixin))
   `((:readme . "includes/README.org")))
 
+
+
 (defclass src-dir-mixin () ())
-(defmethod default-values-for append ((p src-mixin))
+(defmethod default-values-for append ((p src-dir-mixin))
   `((:source-dir . "src")))
 
 (defclass t-dir-mixin () ())
-(defmethod default-values-for append ((p t-mixin))
+(defmethod default-values-for append ((p t-dir-mixin))
   `((:test-dir . "t")))
 
 (defclass test-dir-mixin () ())
-(defmethod default-values-for append ((p test-mixin))
+(defmethod default-values-for append ((p test-dir-mixin))
   `((:test-dir . "test")))
+
 
 
 (defclass test-package-hyphened-mixin () ())
 (defmethod default-values-for append ((p test-package-hyphened-mixin))
-  `((:test-package . ,(lambda () (concatenate 'string (getp :name) "-test")))))
+  `((:test-name . ,(delay (concatenate 'string (getp :name) "-test")))))
 
 (defclass test-package-dotted-mixin () ())
 (defmethod default-values-for append ((p test-package-dotted-mixin))
-  `((:test-package . ,(lambda () (concatenate 'string (getp :name) ".test")))))
+  `((:test-name . ,(delay (concatenate 'string (getp :name) ".test")))))
 
 (defclass test-package-dotted-t-mixin () ())
 (defmethod default-values-for append ((p test-package-dotted-t-mixin))
-  `((:test-package . ,(lambda () (concatenate 'string (getp :name) ".t")))))
+  `((:test-name . ,(delay (concatenate 'string (getp :name) ".t")))))
+
 
 
 (defclass package-file-as-project-mixin () ())
 (defmethod default-values-for append ((p package-file-as-project-mixin))
-  `((:package-filename . ,(lambda () (getp :name)))))
+  `((:package-filename . ,(delay (getp :name)))))
 
 (defclass package-file-as-package-mixin () ())
 (defmethod default-values-for append ((p package-file-as-package-mixin))
   `((:package-filename . :package)))
+
 
 (defclass asdf3-mixin () ())
 (defmethod default-values-for append ((p asdf3-mixin))
@@ -95,16 +108,18 @@
 
 (defclass cl-test-more-mixin () ())
 (defmethod default-values-for append ((p cl-test-more-mixin))
-  `((:test-suite . :cl-test-more)
+  `((:test-suite . "cl-test-more")
+    (:test-template . "includes/cl-test-more")
     (:test-command . (asdf:clear-system c))))
 (defclass fiveam-mixin () ())
 (defmethod default-values-for append ((p fiveam-mixin))
-  `((:test-suite . :fiveam)
-    (:test-command . ,(lambda ()
-                              `(progn
-                                 (eval (read-from-string
-                                        ,(format nil "(fiveam:run! :~a)" (getp :name))))
-                                 (asdf:clear-system c))))))
+  `((:test-suite . "fiveam")
+    (:test-template . "includes/fiveam")
+    (:test-command . ,(delay
+                       `(progn
+                          (eval (read-from-string
+                                 ,(format nil "(fiveam:run! :~a)" (getp :name))))
+                          (asdf:clear-system c))))))
 
 (defclass default-processor (processor
                              markdown-readme-mixin
@@ -112,7 +127,7 @@
                              t-dir-mixin
                              test-package-hyphened-mixin
                              cl-test-more-mixin
-                             package-lisp-as-project-mixin)
+                             package-file-as-project-mixin)
   ())
 
 ;; (defclass interactive-processor (processor)

@@ -14,7 +14,7 @@
   :author "<% @var author %>"
   :license "<% @var license %>"
   :depends-on (:<% @var name %>
-                <% @var test-suite %>)
+               :<% @var test-suite %>)
   :components ((:module "<% @var test-dir %>"
                 :components
                 ((:file "<% @var package-name %>"))))

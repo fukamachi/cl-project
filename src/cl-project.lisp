@@ -84,9 +84,10 @@
 (defun copy-file-to-dir (source-path target-dir)
   "Copy a file to target directory."
   (let ((src (pathname-name source-path)))
+    (print src)
     (cl-emb:register-emb src src)
     (let ((new-name (cl-emb:execute-emb src :env *parameters*)))
-      (break)
+      ;(break "~a" new-name)
       (let ((target-path (make-pathname
                           :device (pathname-device target-dir)
                           :directory (pathname-directory target-dir)

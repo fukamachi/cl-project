@@ -4,11 +4,14 @@
 <% @endif %>|#
 
 (in-package :cl-user)
-(defpackage <% @var test-package %>
+(defpackage :<% @var test-name %>
   (:use :cl
         :<% @var name %>
-        <% @var test-suite %>))
-(in-package :<% @var test-package %>)
+        :<% @var test-suite %>))
+(in-package :<% @var test-name %>)
 
-<% @insert test-suite %>
+<%= (cl-emb:execute-emb
+     (merge-pathnames (getf env :test-template) template-path-default)
+      :env env :generator-maker generator-maker)
+%>
 
