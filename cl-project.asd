@@ -22,6 +22,7 @@
   :author "Eitarow Fukamachi"
   :license "LLGPL"
   :depends-on (:anaphora
+               :trivial-shell
                :cl-emb
                :cl-fad
                :cl-ppcre
@@ -31,7 +32,10 @@
                :local-time)
   :components ((:module "src"
                 :components
-                ((:file "cl-project"))))
+                ((:file :package)
+                 (:file :cl-project)
+                 (:file :processors))
+                :serial t))
   :description "Generate a skeleton for modern project"
   :long-description
   #.(with-open-file (stream (merge-pathnames

@@ -4,14 +4,11 @@
 <% @endif %>|#
 
 (in-package :cl-user)
-(defpackage <% @var name %>-test
+(defpackage <% @var test-package %>
   (:use :cl
         :<% @var name %>
-        :cl-test-more))
-(in-package :<% @var name %>-test)
+        <% @var test-suite %>))
+(in-package :<% @var test-package %>)
 
-(plan nil)
+<% @insert test-suite %>
 
-;; blah blah blah.
-
-(finalize)

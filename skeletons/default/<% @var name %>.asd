@@ -12,24 +12,27 @@
 <% ) %>  Author: <% @var author %><% @if email %> (<% @var email %>)<% @endif %><% @endif %>
 |#
 <% ) %>
+
+<% @unless asdf3 %>
 (in-package :cl-user)
 (defpackage <% @var name %>-asd
   (:use :cl :asdf))
 (in-package :<% @var name %>-asd)
+<% @endunless %>
 
 (defsystem <% @var name %>
   :version "0.1"
   :author "<% @var author %>"
   :license "<% @var license %>"
-  :depends-on (<% (format t "~{:~(~A~)~^~%               ~}"
-                          (getf env :depends-on)) %>)
-  :components ((:module "src"
+  :depends-on (<% (format t "~{:~(~A~)~^ ~}" (getf env :depends-on)) %>)
+  :components ((:module "<% @var source-dir %>"
                 :components
-                ((:file "<% @var name %>"))))
+                ((:file "<% @var package-filename %>"))))
   :description "<% @var description %>"
+  <% @if readme %>
   :long-description
   #.(with-open-file (stream (merge-pathnames
-                             #p"README.markdown"
+                             #p"<% @var readme %>"
                              (or *load-pathname* *compile-file-pathname*))
                             :if-does-not-exist nil
                             :direction :input)
@@ -39,4 +42,5 @@
                                :fill-pointer t)))
           (setf (fill-pointer seq) (read-sequence seq stream))
           seq)))
-  :in-order-to ((test-op (load-op <% @var name %>-test))))
+  <% @endif readme %>
+  :in-order-to ((test-op (load-op <% @var test-name %>))))
