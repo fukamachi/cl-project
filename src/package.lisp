@@ -3,6 +3,7 @@
   (:use :cl
         :anaphora)
   (:import-from :alexandria
+                :with-gensyms
                 :once-only)
   (:import-from :cl-fad
                 :directory-exists-p

@@ -24,6 +24,7 @@
 (defvar *default-dependency* nil)
 
 (defvar *parameters* nil)
+(defvar *processor-type*)
 
 @export
 (defun make-project (path &rest *parameters* &key
@@ -32,7 +33,8 @@
   "Generate a project from a skeleton.
 `path' must be a pathname or a string."
 
-  (let ((*processor* (make-instance processor)))
+  (let* ((*processor-type* processor)
+         (*processor* (make-instance *processor-type*)))
 
     (loop for (key . value) in (default-values-for *processor*)
        do (unless (getf *parameters* key)
@@ -84,7 +86,6 @@
 (defun copy-file-to-dir (source-path target-dir)
   "Copy a file to target directory."
   (let ((src (pathname-name source-path)))
-    (print src)
     (cl-emb:register-emb src src)
     (let ((new-name (cl-emb:execute-emb src :env *parameters*)))
       ;(break "~a" new-name)
