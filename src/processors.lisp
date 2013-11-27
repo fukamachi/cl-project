@@ -2,7 +2,7 @@
 (cl-syntax:use-syntax :annot)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; utility macros
+;;;; utility macros and functions
 
 (defmacro delay (&body body)
   `(lambda () ,@body))
@@ -18,12 +18,17 @@
 (defmacro getp (key)
   `(force (getf *parameters* ,key)))
 
+(defun trimmed-shell (command)
+  (string-right-trim '(#\Space #\Newline)
+                     (shell-command command)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; generic function
 
+@export
 (defclass processor ()
   ())
 
+@export
 (defgeneric process-argument (processor key value))
 (defmethod process-argument :around ((processor processor) key value)
   (setp key (call-next-method))
@@ -33,6 +38,8 @@
   (funcall v))
 (defmethod process-argument ((p processor) k v)
   v)
+
+@export
 (defgeneric default-values-for (processor)
   (:documentation "alist of ((key . value)* )")
   (:method-combination append))
@@ -52,73 +59,87 @@
   (fad:pathname-as-directory target))
 
 (defmethod process-argument ((p processor) (k (eql :author)) (v null))
-  (string-right-trim '(#\Space #\Newline) (shell-command "whoami")))
+  (trimmed-shell "whoami"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; misc mixins
 
 
+@export
 (defclass markdown-readme-mixin () ())
 (defmethod default-values-for append ((p markdown-readme-mixin))
   `((:readme . "includes/README.markdown")))
 
+@export
 (defclass org-readme-mixin () ())
 (defmethod default-values-for append ((p org-readme-mixin))
   `((:readme . "includes/README.org")))
 
 
 
+@export
 (defclass src-dir-mixin () ())
 (defmethod default-values-for append ((p src-dir-mixin))
   `((:source-dir . "src")))
 
+@export
 (defclass t-dir-mixin () ())
 (defmethod default-values-for append ((p t-dir-mixin))
   `((:test-dir . "t")))
 
+@export
 (defclass test-dir-mixin () ())
 (defmethod default-values-for append ((p test-dir-mixin))
   `((:test-dir . "test")))
 
 
 
+@export
 (defclass test-package-hyphened-mixin () ())
 (defmethod default-values-for append ((p test-package-hyphened-mixin))
   `((:test-name . ,(delay (concatenate 'string (getp :name) "-test")))))
 
+@export
 (defclass test-package-dotted-mixin () ())
 (defmethod default-values-for append ((p test-package-dotted-mixin))
   `((:test-name . ,(delay (concatenate 'string (getp :name) ".test")))))
 
+@export
 (defclass test-package-dotted-t-mixin () ())
 (defmethod default-values-for append ((p test-package-dotted-t-mixin))
   `((:test-name . ,(delay (concatenate 'string (getp :name) ".t")))))
 
 
 
+@export
 (defclass package-file-as-project-mixin () ())
 (defmethod default-values-for append ((p package-file-as-project-mixin))
   `((:package-filename . ,(delay (getp :name)))))
 
+@export
 (defclass package-file-as-package-mixin () ())
 (defmethod default-values-for append ((p package-file-as-package-mixin))
   `((:package-filename . "package")))
 
+@export
 (defclass package-file-as-packages-mixin () ())
 (defmethod default-values-for append ((p package-file-as-packages-mixin))
   `((:package-filename . "packages")))
 
 
+@export
 (defclass asdf3-mixin () ())
 (defmethod default-values-for append ((p asdf3-mixin))
   `((:asdf3 . t)))
 
 
+@export
 (defclass cl-test-more-mixin () ())
 (defmethod default-values-for append ((p cl-test-more-mixin))
   `((:test-suite . "cl-test-more")
     (:test-template . "includes/cl-test-more")
     (:test-command . ,(format nil "(asdf:clear-system c)"))))
+@export
 (defclass fiveam-mixin () ())
 (defmethod default-values-for append ((p fiveam-mixin))
   `((:test-suite . "fiveam")
@@ -129,6 +150,7 @@
                                  ,(format nil "\"(fiveam:run! :~a)\"" (getp :name))))
                           (asdf:clear-system c))))))
 
+@export
 (defclass eos-mixin () ())
 (defmethod default-values-for append ((p eos-mixin))
   `((:test-suite . "eos")
@@ -142,6 +164,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; less trivial mixins
 
+@export
 (defclass confirmation-mixin () ())
 (defmethod default-values-for append ((p confirmation-mixin))
   `((:confirm . t)))
@@ -152,29 +175,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; git mixin
 
+@export
 (defclass git-mixin () ())
 (defmethod default-values-for append ((p git-mixin))
   `((:git . t)
     (:upstream . nil)))
 
 (defmethod process-argument ((p git-mixin) (k (eql :author)) (v null))
-  (shell-command "git config --global --get user.name"))
+  (trimmed-shell "git config --global --get user.name"))
 
 (defmethod process-argument ((p git-mixin) (k (eql :email)) (v null))
-  (shell-command "git config --global --get user.email"))
+  (trimmed-shell "git config --global --get user.email"))
 
 (defmethod process-argument :after ((p git-mixin) (k (eql :git)) (v (eql t)))
   (ensure-directories-exist (getp :path))
-  (shell-command (format nil "cd ~a;git init" (getp :path))))
+  (trimmed-shell (format nil "cd ~a;git init" (getp :path))))
 
 (defmethod process-argument :after ((p git-mixin) (k (eql :git)) (v string))
   (ensure-directories-exist (getp :path))
-  (shell-command
+  (trimmed-shell
    (format nil "cd ~a;git init; git remote add origin ~a" (getp :path) v)))
 
 (defmethod process-argument :after ((p git-mixin) (k (eql :upstream)) (v (eql t)))
   (ensure-directories-exist (getp :path))
-  (shell-command
+  (trimmed-shell
    (format nil "cd ~a; git push -u" (getp :path))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -215,15 +239,20 @@
 ;;;; interactive processor  ---  query every nil options
 ;;;;
 
+
+@export
 (defclass interactive-processor (processor) ())
 
 (defmethod process-argument ((p interactive-processor) k (v function))
   (call-next-method p k (funcall v)))
 
-(defmethod process-argument ((p interactive-processor) k v)
-  (if (query-overwrite k v)
-      v
-      (query-value k v)))
+(defmethod process-argument ((p interactive-processor) k v) 
+  (let ((got (getp k)))
+    (cond
+      (got got)
+      ((and (null got) v (query-overwrite k v))
+       (query-value k v))
+      (t nil))))
 
 (defun query-overwrite (key v)
   (y-or-n-p "Is it okay to set a template value of ~s ~& with ~s?"
@@ -253,7 +282,7 @@
 
 (defun query-value (k v)
   (format *query-io*
-          "~&Enter anything you want for key ~a.~& Old value > ~a~& New value > "
+          "~&Enter anything you want for key ~s.~& Old value > ~s~& New value > "
           k v)
   (read *query-io*))
 
