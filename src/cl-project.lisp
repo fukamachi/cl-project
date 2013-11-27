@@ -22,6 +22,10 @@
 
 @export
 (defvar *default-dependency* nil)
+@export
+(defvar *default-author* nil)
+@export
+(defvar *default-email* nil)
 
 (defvar *parameters* nil)
 (defvar *processor-type*)

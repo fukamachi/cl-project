@@ -39,7 +39,8 @@
 
 (defmethod default-values-for append ((processor processor))
   `((:skeleton . ,*default-skeleton-directory*)
-    (:author . ,(delay (string-right-trim '(#\Space #\Newline) (shell-command "whoami"))))
+    (:author . ,*default-author*)
+    (:email . ,*default-email*)
     (:name . ,(delay (car (last (pathname-directory (getp :path))))))
     (:depends-on . ,*default-dependency*)))
 
