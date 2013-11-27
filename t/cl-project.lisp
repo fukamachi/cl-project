@@ -20,7 +20,7 @@
 (let ((*sample-project-directory*
        (asdf:system-relative-pathname
         :cl-project
-        #p"t/cl-project-sample/")))
+        #p"t/sample/")))
   (unwind-protect
        (progn
          (plan 2)
@@ -29,7 +29,25 @@
          (cl-project:make-project *sample-project-directory*)
          (ok (directory-exists-p *sample-project-directory*)
              "Sample project was generated")
-         (ok (asdf:load-system :cl-project-sample)
+         (ok (asdf:load-system :sample)
+             "Can load the new project")
+         (finalize))
+    (delete-directory-and-files *sample-project-directory*)))
+
+
+(let ((*sample-project-directory*
+       (asdf:system-relative-pathname
+        :cl-project
+        #p"t/sample-no-confirm/")))
+  (unwind-protect
+       (progn
+         (plan 2)
+         (when (file-exists-p *sample-project-directory*)
+           (delete-directory-and-files *sample-project-directory*))
+         (cl-project:make-project *sample-project-directory* :confirm nil)
+         (ok (directory-exists-p *sample-project-directory*)
+             "Sample project was generated")
+         (ok (asdf:load-system :sample-no-confirm)
              "Can load the new project")
          (finalize))
     (delete-directory-and-files *sample-project-directory*)))
@@ -37,7 +55,7 @@
 (let ((*sample-project-directory*
        (asdf:system-relative-pathname
         :cl-project
-        #p"t/cl-project-sample-mod/")))
+        #p"t/sample-mod/")))
   (unwind-protect
        (progn
          (plan 2)
@@ -46,7 +64,7 @@
                                   :author "alien tech")
          (ok (directory-exists-p *sample-project-directory*)
              "Sample project was generated")
-         (ok (asdf:load-system :cl-project-sample)
+         (ok (asdf:load-system :sample-mod)
              "Can load the new project")
          (finalize))
     (delete-directory-and-files *sample-project-directory*)))
@@ -54,7 +72,7 @@
 (let ((*sample-project-directory*
        (asdf:system-relative-pathname
         :cl-project
-        #p"t/cl-project-sample-eos/")))
+        #p"t/sample-eos/")))
   (unwind-protect
        (progn
          (plan 2)
@@ -62,26 +80,43 @@
                                   :processor 'optima-like-processor)
          (ok (directory-exists-p *sample-project-directory*)
              "Sample project was generated")
-         (ok (asdf:load-system :cl-project-sample)
+         (ok (asdf:load-system :sample-eos)
              "Can load the new project")
          (finalize))
     (delete-directory-and-files *sample-project-directory*)))
+
+;; (let ((*sample-project-directory*
+;;        (asdf:system-relative-pathname
+;;         :cl-project
+;;         #p"t/sample-interactive/")))
+;;   (unwind-protect
+;;        (progn
+;;          (plan 2)
+;;          (cl-project:make-project *sample-project-directory*
+;;                                   :processor 'default-iprocessor)
+;;          (ok (directory-exists-p *sample-project-directory*)
+;;              "Sample project was generated")
+;;          (ok (asdf:load-system :sample-interactive)
+;;              "Can load the new project")
+;;          (finalize))
+;;     (delete-directory-and-files *sample-project-directory*)))
 
 (let ((*sample-project-directory*
        (asdf:system-relative-pathname
         :cl-project
-        #p"t/cl-project-sample-eos/")))
+        #p"t/sample-git/")))
   (unwind-protect
        (progn
-         (plan 2)
+         (plan 3)
          (cl-project:make-project *sample-project-directory*
-                                  :processor 'default-iprocessor)
+                                  :processor 'git-processor)
          (ok (directory-exists-p *sample-project-directory*)
              "Sample project was generated")
-         (ok (asdf:load-system :cl-project-sample)
+         (let ((git-dir (merge-pathnames ".git" *sample-project-directory*)))
+           (ok (directory-exists-p git-dir)
+               (format nil "Git repo ~a initialized" git-dir)))
+         (ok (asdf:load-system :sample-git)
              "Can load the new project")
          (finalize))
     (delete-directory-and-files *sample-project-directory*)))
-
-
 
