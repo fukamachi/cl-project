@@ -51,8 +51,11 @@
   ;; Ensure `path' ends with a slash(/).
   (fad:pathname-as-directory target))
 
+(defmethod process-argument ((p processor) (k (eql :author)) (v null))
+  (string-right-trim '(#\Space #\Newline) (shell-command "whoami")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; interactive processor
+;;;; misc mixins
 
 
 (defclass markdown-readme-mixin () ())
@@ -115,7 +118,7 @@
 (defmethod default-values-for append ((p cl-test-more-mixin))
   `((:test-suite . "cl-test-more")
     (:test-template . "includes/cl-test-more")
-    (:test-command . (asdf:clear-system c))))
+    (:test-command . ,(format nil "(asdf:clear-system c)"))))
 (defclass fiveam-mixin () ())
 (defmethod default-values-for append ((p fiveam-mixin))
   `((:test-suite . "fiveam")
@@ -136,12 +139,46 @@
                                  ,(format nil "\"(eos:run! :~a)\"" (getp :name))))
                           (asdf:clear-system c))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; less trivial mixins
+
 (defclass confirmation-mixin () ())
 (defmethod default-values-for append ((p confirmation-mixin))
   `((:confirm . t)))
 
 (defmethod process-argument :after ((p confirmation-mixin) (k (eql :confirm)) v)
-  (ensure-everything-is-right))
+  (ensure-everything-is-right v))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; git mixin
+
+(defclass git-mixin () ())
+(defmethod default-values-for append ((p git-mixin))
+  `((:git . t)
+    (:upstream . nil)))
+
+(defmethod process-argument ((p git-mixin) (k (eql :author)) (v null))
+  (shell-command "git config --global --get user.name"))
+
+(defmethod process-argument ((p git-mixin) (k (eql :email)) (v null))
+  (shell-command "git config --global --get user.email"))
+
+(defmethod process-argument :after ((p git-mixin) (k (eql :git)) (v (eql t)))
+  (ensure-directories-exist (getp :path))
+  (shell-command (format nil "cd ~a;git init" (getp :path))))
+
+(defmethod process-argument :after ((p git-mixin) (k (eql :git)) (v string))
+  (ensure-directories-exist (getp :path))
+  (shell-command
+   (format nil "cd ~a;git init; git remote add origin ~a" (getp :path) v)))
+
+(defmethod process-argument :after ((p git-mixin) (k (eql :upstream)) (v (eql t)))
+  (ensure-directories-exist (getp :path))
+  (shell-command
+   (format nil "cd ~a; git push -u" (getp :path))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; integrated classes
 
 @export
 (defclass default-processor (processor
@@ -174,11 +211,14 @@
                                  package-file-as-packages-mixin)
   ())
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; interactive processor  ---  query every nil options
+;;;;
 
 (defclass interactive-processor (processor) ())
 
 (defmethod process-argument ((p interactive-processor) k (v function))
-  (call-next-method (funcall v)))
+  (call-next-method p k (funcall v)))
 
 (defmethod process-argument ((p interactive-processor) k v)
   (if (query-overwrite k v)
@@ -186,7 +226,7 @@
       (query-value k v)))
 
 (defun query-overwrite (key v)
-  (y-or-n-p "Is it okay to set a template value of ~a with ~a?"
+  (y-or-n-p "Is it okay to set a template value of ~s ~& with ~s?"
             key v))
 
 (defmacro do-restart (bindings &body body)
@@ -217,13 +257,13 @@
           k v)
   (read *query-io*))
 
-(defun ensure-everything-is-right ()
+(defun ensure-everything-is-right (&optional confirm)
   (format t "~&Check it again. ... However, It's totally ok
  to remove the created directory afterward, so you don't have to be nervous.
 
 ~{~4t~a ~25t --- ~a~%~}
 " (mapcar (lambda (thunk) (force thunk)) *parameters*))
-  (if (y-or-n-p "ok?")
+  (if (if confirm (y-or-n-p "ok?") t)
       t
       (change-value)))
 
@@ -249,6 +289,17 @@
                               test-package-hyphened-mixin
                               cl-test-more-mixin
                               package-file-as-project-mixin)
+  ())
+
+@export
+(defclass git-processor (processor
+                         markdown-readme-mixin
+                         src-dir-mixin
+                         t-dir-mixin
+                         test-package-hyphened-mixin
+                         cl-test-more-mixin
+                         package-file-as-project-mixin
+                         git-mixin)
   ())
 
 
