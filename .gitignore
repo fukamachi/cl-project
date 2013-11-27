@@ -5,3 +5,4 @@
 *.lx64fsl
 *.x86f
 *~
+t/sample*
