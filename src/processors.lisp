@@ -181,11 +181,18 @@
   `((:git . t)
     (:upstream . nil)))
 
-(defmethod process-argument ((p git-mixin) (k (eql :author)) (v null))
+@export
+(defun git-name ()
   (trimmed-shell "git config --global --get user.name"))
+@export
+(defun git-email ()
+  (trimmed-shell "git config --global --get user.email"))
+
+(defmethod process-argument ((p git-mixin) (k (eql :author)) (v null))
+  (git-name))
 
 (defmethod process-argument ((p git-mixin) (k (eql :email)) (v null))
-  (trimmed-shell "git config --global --get user.email"))
+  (git-email))
 
 (defmethod process-argument :after ((p git-mixin) (k (eql :git)) (v (eql t)))
   (ensure-directories-exist (getp :path))
@@ -205,34 +212,34 @@
 ;;;; integrated classes
 
 @export
-(defclass default-processor (processor
-                             markdown-readme-mixin
+(defclass default-processor (markdown-readme-mixin
                              src-dir-mixin
                              t-dir-mixin
                              test-package-hyphened-mixin
                              cl-test-more-mixin
                              package-file-as-project-mixin
-                             confirmation-mixin)
+                             confirmation-mixin
+                             processor)
   ())
 
 @export
-(defclass modified-processor (processor
-                              org-readme-mixin
+(defclass modified-processor (org-readme-mixin
                               src-dir-mixin
                               t-dir-mixin
                               test-package-dotted-mixin
                               fiveam-mixin
-                              package-file-as-package-mixin)
+                              package-file-as-package-mixin
+                              processor)
   ())
 
 @export
-(defclass optima-like-processor (processor
-                                 markdown-readme-mixin
+(defclass optima-like-processor (markdown-readme-mixin
                                  src-dir-mixin
                                  test-dir-mixin
                                  test-package-dotted-mixin
                                  eos-mixin
-                                 package-file-as-packages-mixin)
+                                 package-file-as-packages-mixin
+                                 processor)
   ())
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -311,24 +318,24 @@
           (ensure-everything-is-right)))))
   
 @export
-(defclass default-iprocessor (interactive-processor
-                              markdown-readme-mixin
+(defclass default-iprocessor (markdown-readme-mixin
                               src-dir-mixin
                               t-dir-mixin
                               test-package-hyphened-mixin
                               cl-test-more-mixin
-                              package-file-as-project-mixin)
+                              package-file-as-project-mixin
+                              interactive-processor)
   ())
 
 @export
-(defclass git-processor (processor
+(defclass git-processor (git-mixin
                          markdown-readme-mixin
                          src-dir-mixin
                          t-dir-mixin
                          test-package-hyphened-mixin
                          cl-test-more-mixin
                          package-file-as-project-mixin
-                         git-mixin)
+                         processor)
   ())
 
 
