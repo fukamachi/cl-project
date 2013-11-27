@@ -37,7 +37,7 @@
          (*processor* (make-instance *processor-type*)))
 
     (loop for (key . value) in (default-values-for *processor*)
-       do (unless (getf *parameters* key)
+       do (unless (member key *parameters*)
             (setf (getf *parameters* key) value)))
 
     (setf (getf *parameters* :path) path)
