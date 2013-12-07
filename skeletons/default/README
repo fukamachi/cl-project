@@ -1,0 +1,5 @@
+
+<%= (cl-emb:execute-emb
+     (merge-pathnames (getf env :readme) template-path-default)
+      :env env :generator-maker generator-maker)
+%>

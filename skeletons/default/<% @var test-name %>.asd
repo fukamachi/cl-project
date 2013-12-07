@@ -3,17 +3,19 @@
 <% @if author %>  Copyright (c) <%= (local-time:timestamp-year (local-time:now)) %> <% @var author %><% @if email %> (<% @var email %>)<% @endif %>
 <% @endif %>|#
 
+<% @unless asdf3 %>
 (in-package :cl-user)
-(defpackage <% @var name %>-test-asd
+(defpackage <% @var test-name %>-asd
   (:use :cl :asdf))
-(in-package :<% @var name %>-test-asd)
+(in-package :<% @var test-name %>-asd)
+<% @endunless %>
 
-(defsystem <% @var name %>-test
+(defsystem <% @var test-name %>
   :author "<% @var author %>"
   :license "<% @var license %>"
   :depends-on (:<% @var name %>
-               :cl-test-more)
-  :components ((:module "t"
+               :<% @var test-suite %>)
+  :components ((:module "<% @var test-dir %>"
                 :components
-                ((:file "<% @var name %>"))))
-  :perform (load-op :after (op c) (asdf:clear-system c)))
+                ((:file "<% @var package-name %>"))))
+  :perform (load-op :after (op c) <% @var test-command %>))
