@@ -37,6 +37,19 @@
   "Generate a project from a skeleton.
 `path' must be a pathname or a string."
 
+  ;; preprocessing: 
+  ;; build an anonymous class if the processor is
+  ;; a cons of class name symbols
+  (when (and (consp processor)
+             (every (lambda (sym)
+                      (and (symbolp sym)
+                           (find-class sym :errorp nil)))
+                    processor))
+    (with-gensyms (anonymous-class)
+      (eval `(defclass ,anonymous-class ,processor ()))
+      (setf processor anonymous-class)))
+
+  
   (let* ((*processor-type* processor)
          (*processor* (make-instance *processor-type*)))
 

@@ -29,7 +29,7 @@
   (plan 2)
   (when (file-exists-p dir)
     (delete-directory-and-files dir))
-  (cl-project:make-project dir)
+  (make-project dir)
   (ok (directory-exists-p dir)
       "Sample project was generated")
   (ok (load-system :sample)
@@ -40,7 +40,7 @@
   (plan 2)
   (when (file-exists-p dir)
     (delete-directory-and-files dir))
-  (cl-project:make-project dir :confirm nil)
+  (make-project dir :confirm nil)
   (ok (directory-exists-p dir)
       "Sample project was generated")
   (ok (load-system :sample-no-confirm)
@@ -51,9 +51,9 @@
   (plan 2)
   (when (file-exists-p dir)
     (delete-directory-and-files dir))
-  (cl-project:make-project dir
-                           :processor 'modified-processor
-                           :author "alien tech")
+  (make-project dir
+                :processor 'modified-processor
+                :author "alien tech")
   (ok (directory-exists-p dir)
       "Sample project was generated")
   (ok (load-system :sample-mod)
@@ -64,7 +64,7 @@
   (plan 2)
   (when (file-exists-p dir)
     (delete-directory-and-files dir))
-  (cl-project:make-project dir
+  (make-project dir
                            :processor 'optima-like-processor)
   (ok (directory-exists-p dir)
       "Sample project was generated")
@@ -78,8 +78,7 @@
   (plan 3)
   (when (file-exists-p dir)
     (delete-directory-and-files dir))
-  (cl-project:make-project dir
-                           :processor 'git-processor)
+  (make-project dir :processor 'git-processor)
   (ok (directory-exists-p dir)
       "Sample project was generated")
   (let ((git-dir (merge-pathnames ".git" dir)))
@@ -111,11 +110,51 @@
   (plan 2)
   (when (file-exists-p dir)
     (delete-directory-and-files dir))
-  (cl-project:make-project dir
-                           :processor 'git-iprocessor)
+  (make-project dir :processor 'git-iprocessor)
   (ok (directory-exists-p dir)
       "Sample project was generated")
   (ok (load-system :sample-interactive)
+      "Can load the new project"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; using an anonymous processor
+
+(let ((dir (sys-push #p"t/sample-class-made-from-scratch/")))
+  (plan 3)
+  (when (file-exists-p dir)
+    (delete-directory-and-files dir))
+  (make-project dir
+                :processor '(org-readme-mixin
+                             src-dir-mixin
+                             t-dir-mixin
+                             test-package-dotted-mixin
+                             fiveam-mixin
+                             package-file-as-package-mixin
+                             git-mixin
+                             processor)
+                :depends-on '(:alexandria :trivial-shell)
+                :git t)
+  (ok (directory-exists-p dir)
+      "Sample project was generated")
+  (ok (directory-exists-p (merge-pathnames ".git" dir))
+      "Git repo has been initialized")
+  (ok (load-system :sample-class-made-from-scratch)
+      "Can load the new project"))
+
+;; mix-in the default processor with git-mixin
+
+(let ((dir (sys-push #p"t/sample-default-and-git/")))
+  (plan 3)
+  (when (file-exists-p dir)
+    (delete-directory-and-files dir))
+  (make-project dir
+                :processor '(git-mixin default-processor)
+                :git t)
+  (ok (directory-exists-p dir)
+      "Sample project was generated")
+  (ok (directory-exists-p (merge-pathnames ".git" dir))
+      "Git repo has been initialized")
+  (ok (load-system :sample-class-made-from-scratch)
       "Can load the new project"))
 
 (defun clean ()
