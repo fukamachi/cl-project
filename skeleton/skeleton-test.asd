@@ -16,4 +16,8 @@
   :components ((:module "t"
                 :components
                 ((:file "<% @var name %>"))))
-  :perform (load-op :after (op c) (asdf:clear-system c)))
+
+  :defsystem-depends-on (:cl-test-more)
+  :perform (test-op :after (op c)
+                    (funcall (intern #. (string :run-test-system) :cl-test-more)
+                             c)))

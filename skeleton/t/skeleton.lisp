@@ -10,6 +10,8 @@
         :cl-test-more))
 (in-package :<% @var name %>-test)
 
+;; NOTE: To run this test file, execute `(asdf:test-system :<% @var name %>)' in your Lisp.
+
 (plan nil)
 
 ;; blah blah blah.
