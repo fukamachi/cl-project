@@ -20,4 +20,5 @@
   :defsystem-depends-on (:cl-test-more)
   :perform (test-op :after (op c)
                     (funcall (intern #. (string :run-test-system) :cl-test-more)
-                             c)))
+                             c)
+                    (asdf:clear-system c)))
