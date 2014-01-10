@@ -17,7 +17,7 @@
                :cl-test-more)
   :components ((:module "t"
                 :components
-                ((:file "<% @var name %>"))))
+                ((:test-file "<% @var name %>"))))
 
   :defsystem-depends-on (:cl-test-more)
   :perform (test-op :after (op c)
