@@ -28,7 +28,8 @@
                :cl-annot
                :cl-syntax
                :cl-syntax-annot
-               :local-time)
+               :local-time
+               :cl-test-more)
   :components ((:module "src"
                 :components
                 ((:file "cl-project"))))
