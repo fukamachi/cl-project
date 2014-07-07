@@ -31,7 +31,7 @@
 (defvar *skeleton-parameters* nil)
 
 @export
-(defun make-project (path &rest params &key name description author email license depends-on &allow-other-keys)
+(defun make-project (path &rest params &key name description author email (without-tests nil) license depends-on &allow-other-keys)
   "Generate a skeleton.
 `path' must be a pathname or a string."
   (declare (ignorable name description author email license depends-on))
@@ -48,14 +48,17 @@
    :env params)
   (load (merge-pathnames (concatenate 'string (getf params :name) ".asd")
                          path))
-  (load (merge-pathnames (concatenate 'string (getf params :name) "-test.asd")
-                         path)))
+  (unless without-tests
+    (load (merge-pathnames (concatenate 'string (getf params :name) "-test.asd")
+                           path))))
 
 @export
 (defun generate-skeleton (source-dir target-dir &key env)
   "General skeleton generator."
   (let ((*skeleton-parameters* env))
-    (copy-directory source-dir target-dir)))
+    (copy-directory source-dir target-dir)
+    (when (getf env :without-tests)
+      (remove-tests target-dir (concatenate 'string (getf env :name) "-test.asd")))))
 
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
@@ -92,3 +95,11 @@
     (write-sequence
      (cl-emb:execute-emb source-path :env *skeleton-parameters*)
      stream)))
+
+(defun remove-tests (target-dir test-asd)
+  (let ((dir (cl-fad:merge-pathnames-as-directory target-dir (cl-fad:pathname-as-directory "t")))
+        (asd (cl-fad:merge-pathnames-as-file target-dir (cl-fad:pathname-as-file test-asd))))
+    (when (cl-fad:directory-exists-p dir)
+      (format t "removing tests...")
+      (delete-file asd)
+      (cl-fad:delete-directory-and-files dir))))
