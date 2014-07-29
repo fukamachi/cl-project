@@ -15,7 +15,7 @@ Copyright (c) <%= (local-time:timestamp-year (local-time:now)) %> <% @var author
 <%- @endif %>
 <%- @if license %>
 
-# License
+## License
 
 Licensed under the <% @var license %> License.
 <%- @endif %>
