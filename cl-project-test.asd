@@ -11,9 +11,11 @@
 (defsystem cl-project-test
   :author "Eitarow Fukamachi"
   :license "LLGPL"
+  :defsystem-depends-on (:prove-asdf)
   :depends-on (:cl-project
-               :cl-test-more)
+               :prove)
   :components ((:module "t"
                 :components
                 ((:file "cl-project"))))
-  :perform (load-op :after (op c) (asdf:clear-system c)))
+  :perform (load-op :after (op c)
+                    (intern #.(string :run-test-system) :prove)))

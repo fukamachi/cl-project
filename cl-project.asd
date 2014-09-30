@@ -29,7 +29,7 @@
                :cl-syntax
                :cl-syntax-annot
                :local-time
-               :cl-test-more)
+               :prove)
   :components ((:module "src"
                 :components
                 ((:file "cl-project"))))

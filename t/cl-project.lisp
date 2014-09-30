@@ -7,7 +7,7 @@
 (defpackage cl-project-test
   (:use :cl
         :cl-project
-        :cl-test-more)
+        :prove)
   (:import-from :cl-fad
                 :directory-exists-p
                 :delete-directory-and-files))

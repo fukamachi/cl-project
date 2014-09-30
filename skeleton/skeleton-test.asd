@@ -14,13 +14,12 @@
   :author "<% @var author %>"
   :license "<% @var license %>"
   :depends-on (:<% @var name %>
-               :cl-test-more)
+               :prove)
   :components ((:module "t"
                 :components
                 ((:test-file "<% @var name %>"))))
 
-  :defsystem-depends-on (:cl-test-more)
+  :defsystem-depends-on (:prove-asdf)
   :perform (test-op :after (op c)
-                    (funcall (intern #. (string :run-test-system) :cl-test-more)
-                             c)
+                    (funcall (intern #.(string :run-test-system) :prove-asdf) c)
                     (asdf:clear-system c)))
