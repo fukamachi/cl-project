@@ -55,9 +55,8 @@ A command-line interface for cl-project:make-project.
 (defun main (&rest args)
   (unless args
     (help)
-    (uiop:quit -1))
+    (terminate))
 
   (ql:quickload :cl-project :silent t)
 
   (apply (intern (string :make-project) :cl-project) (parse-args args)))
-
