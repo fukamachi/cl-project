@@ -1,0 +1,63 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+
+#|
+A command-line interface for cl-project:make-project.
+|#
+
+(ql:quickload '(:uiop :alexandria) :silent t)
+
+(import 'alexandria:starts-with-subseq)
+(import 'alexandria:ensure-list)
+
+(defun help ()
+  (format t "~&Usage:
+    make-project /home/user/common-lisp/sample --name sample --description \"sample project.\" --author \"Your name\" --license LLGPL --depends-on alexandria split-sequence"))
+
+(defun terminate (&optional message args)
+  (when message
+    (format *error-output* "~&Error: ~A~%"
+            (apply #'format nil (princ-to-string message) (ensure-list args))))
+  (uiop:quit -1))
+
+(defun parse-args (args)
+  (flet ((keyp (string)
+           (starts-with-subseq "--" string))
+         (parse-value (value)
+           (or (ignore-errors
+                (let ((read-value (read-from-string value)))
+                  (if (and (symbolp read-value)
+                           (not (keywordp read-value)))
+                      value
+                      read-value)))
+               value)))
+    (let ((path (pop args)))
+      (when (starts-with-subseq "--" path)
+        (terminate "No path given."))
+      (cons path
+            (loop for index from 0 below (length args)
+                  for first = (elt args index)
+                  for rest = (subseq args (incf index))
+                  for key = (or (when (not (keyp first))
+                                  (terminate "Invalid option: ~S" first))
+                                (intern (string-upcase (subseq first 2)) :keyword))
+                  for value = (if (eql key :depends-on)
+                                  (loop for (item . rest) on rest
+                                        collecting item
+                                        until (keyp (car rest))
+                                        do (incf index))
+                                  (parse-value (car rest)))
+                  nconc (list key (parse-value value)))))))
+
+(defun main (&rest args)
+  (unless args
+    (help)
+    (uiop:quit -1))
+
+  (ql:quickload :cl-project :silent t)
+
+  (apply (intern (string :make-project) :cl-project) (parse-args args)))
+
