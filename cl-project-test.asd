@@ -13,7 +13,8 @@
   :license "LLGPL"
   :defsystem-depends-on (:prove-asdf)
   :depends-on (:cl-project
-               :prove)
+               :prove
+               :uiop)
   :components ((:module "t"
                 :components
                 ((:file "cl-project"))))

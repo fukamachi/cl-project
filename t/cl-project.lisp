@@ -7,10 +7,7 @@
 (defpackage cl-project-test
   (:use :cl
         :cl-project
-        :prove)
-  (:import-from :cl-fad
-                :directory-exists-p
-                :delete-directory-and-files))
+        :prove))
 (in-package :cl-project-test)
 
 (plan 2)
@@ -20,17 +17,14 @@
      :cl-project
      #p"t/cl-project-sample/"))
 
-(when (cl-fad:file-exists-p *sample-project-directory*)
-  (cl-fad:delete-directory-and-files *sample-project-directory*))
+(uiop:delete-directory-tree *sample-project-directory* :validate t :if-does-not-exist :ignore)
 
 (cl-project:make-project *sample-project-directory*)
 
-(ok (cl-fad:directory-exists-p *sample-project-directory*)
+(ok (uiop:directory-exists-p *sample-project-directory*)
     "Sample project was generated")
 
 (ok (asdf:load-system :cl-project-sample)
     "Can load the new project")
-
-(cl-fad:delete-directory-and-files *sample-project-directory*)
 
 (finalize)

@@ -23,7 +23,7 @@
   :license "LLGPL"
   :depends-on (:anaphora
                :cl-emb
-               :cl-fad
+               :uiop
                :cl-ppcre
                :cl-annot
                :cl-syntax

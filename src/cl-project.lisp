@@ -10,10 +10,12 @@
 (defpackage cl-project
   (:use :cl
         :anaphora)
-  (:import-from :cl-fad
+  (:import-from :uiop
                 :directory-exists-p
-                :pathname-as-directory
-                :list-directory)
+                :ensure-directory-pathname
+                :directory-files
+                :directory-pathname-p
+                :delete-directory-tree)
   (:import-from :cl-ppcre
                 :regex-replace-all)
   (:import-from :cl-emb
@@ -37,7 +39,7 @@
   (declare (ignorable name description author email license depends-on))
 
   ;; Ensure `path' ends with a slash(/).
-  (setf path (fad:pathname-as-directory path))
+  (setf path (uiop:ensure-directory-pathname path))
 
   (sunless (getf params :name)
     (setf it
@@ -63,17 +65,16 @@
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
   (ensure-directories-exist target-dir)
-  (loop for file in (cl-fad:list-directory source-dir)
-        if (cl-fad:directory-pathname-p file)
-          do (copy-directory
-                  file
-                  (concatenate 'string
-                               (awhen (pathname-device target-dir)
-                                 (format nil "~A:" it))
-                               (directory-namestring target-dir)
-                               (car (last (pathname-directory file))) "/"))
-        else
-          do (copy-file-to-dir file target-dir))
+  (loop for file in (uiop:directory-files source-dir)
+        do (copy-file-to-dir file target-dir))
+  (loop for dir in (uiop:subdirectories source-dir)
+        do (copy-directory
+            dir
+            (concatenate 'string
+                         (awhen (pathname-device target-dir)
+                           (format nil "~A:" it))
+                         (directory-namestring target-dir)
+                         (car (last (pathname-directory dir))) "/")))
   t)
 
 (defun copy-file-to-dir (source-path target-dir)
@@ -97,9 +98,9 @@
      stream)))
 
 (defun remove-tests (target-dir test-asd)
-  (let ((dir (cl-fad:merge-pathnames-as-directory target-dir (cl-fad:pathname-as-directory "t")))
-        (asd (cl-fad:merge-pathnames-as-file target-dir (cl-fad:pathname-as-file test-asd))))
-    (when (cl-fad:directory-exists-p dir)
+  (let ((dir (merge-pathnames (uiop:ensure-directory-pathname "t") target-dir))
+        (asd (merge-pathnames test-asd target-dir)))
+    (when (uiop:directory-exists-p dir)
       (format t "removing tests...")
       (delete-file asd)
-      (cl-fad:delete-directory-and-files dir))))
+      (uiop:delete-directory-tree dir :validate t))))
