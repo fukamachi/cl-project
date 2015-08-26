@@ -3,7 +3,7 @@
 ## Usage
 
     (cl-project:make-project #p"lib/cl-sample/"
-      :author "Eitarow Fukamachi"
+      :author "Eitaro Fukamachi"
       :email "e.arrows@gmail.com"
       :license "LLGPL"
       :depends-on '(clack cl-annot))
@@ -43,11 +43,11 @@ All parameters are optional.
 
 ## Author
 
-* Eitarow Fukamachi (e.arrows@gmail.com)
+* Eitaro Fukamachi (e.arrows@gmail.com)
 
 ## Copyright
 
-Copyright (c) 2011 Eitarow Fukamachi (e.arrows@gmail.com)
+Copyright (c) 2011 Eitaro Fukamachi (e.arrows@gmail.com)
 
 ## License
 

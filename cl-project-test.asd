@@ -1,6 +1,6 @@
 #|
   This file is a part of CL-Project project.
-  Copyright (c) 2011 Eitarow Fukamachi (e.arrows@gmail.com)
+  Copyright (c) 2011 Eitaro Fukamachi (e.arrows@gmail.com)
 |#
 
 (in-package :cl-user)
@@ -9,7 +9,7 @@
 (in-package :cl-project-test-asd)
 
 (defsystem cl-project-test
-  :author "Eitarow Fukamachi"
+  :author "Eitaro Fukamachi"
   :license "LLGPL"
   :defsystem-depends-on (:prove-asdf)
   :depends-on (:cl-project
