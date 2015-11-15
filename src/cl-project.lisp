@@ -65,8 +65,8 @@
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
   (ensure-directories-exist target-dir)
-  (loop for file in (uiop:directory-files source-dir)
-        do (copy-file-to-dir file target-dir))
+  (loop for file in (set-difference (uiop:directory-files source-dir) (uiop:subdirectories source-dir) :test #'equal)
+     do (copy-file-to-dir file target-dir))
   (loop for dir in (uiop:subdirectories source-dir)
         do (copy-directory
             dir
@@ -85,7 +85,7 @@
                       :name (regex-replace-all
                              "skeleton"
                              (pathname-name source-path)
-                             (string-downcase (getf *skeleton-parameters* :name)))
+                             (getf *skeleton-parameters* :name))
                       :type (pathname-type source-path))))
     (copy-file-to-file source-path target-path)))
 
