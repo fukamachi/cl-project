@@ -24,8 +24,6 @@
   :depends-on (:cl-emb
                :uiop
                :cl-ppcre
-               :cl-annot
-               :cl-syntax
                :cl-syntax-annot
                :local-time
                :prove)
