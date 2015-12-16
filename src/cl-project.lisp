@@ -1,15 +1,6 @@
-#|
-  This file is a part of CL-Project package.
-  URL: http://github.com/fukamachi/cl-project
-  Copyright (c) 2011 Eitaro Fukamachi <e.arrows@gmail.com>
-
-  CL-Project is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
 (defpackage cl-project
-  (:use :cl
-        :anaphora)
+  (:use :cl)
   (:import-from :uiop
                 :directory-exists-p
                 :ensure-directory-pathname
@@ -41,9 +32,9 @@
   ;; Ensure `path' ends with a slash(/).
   (setf path (uiop:ensure-directory-pathname path))
 
-  (sunless (getf params :name)
-    (setf it
-          (car (last (pathname-directory path)))))
+  (unless (getf params :name))
+  (setf (getf params :name)
+        (car (last (pathname-directory path))))
   (generate-skeleton
    *skeleton-directory*
    path
@@ -74,8 +65,8 @@
         do (copy-directory
             dir
             (concatenate 'string
-                         (awhen (pathname-device target-dir)
-                           (format nil "~A:" it))
+                         (when (pathname-device target-dir)
+                           (format nil "~A:" (pathname-device target-dir)))
                          (directory-namestring target-dir)
                          (car (last (pathname-directory dir))) "/")))
   t)

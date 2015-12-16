@@ -21,8 +21,7 @@
   :version "0.1"
   :author "Eitaro Fukamachi"
   :license "LLGPL"
-  :depends-on (:anaphora
-               :cl-emb
+  :depends-on (:cl-emb
                :uiop
                :cl-ppcre
                :cl-annot
