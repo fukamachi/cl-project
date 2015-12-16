@@ -14,6 +14,7 @@
   :defsystem-depends-on (:prove-asdf)
   :depends-on (:cl-project
                :prove
+               :caveman2
                :uiop)
   :components ((:module "t"
                 :components
