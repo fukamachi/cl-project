@@ -17,6 +17,7 @@
                :uiop)
   :components ((:module "t"
                 :components
-                ((:file "cl-project"))))
-  :perform (load-op :after (op c)
-                    (intern #.(string :run-test-system) :prove)))
+                ((:test-file "cl-project"))))
+  :defsystem-depends-on (:prove-asdf)
+  :perform (test-op :after (op c)
+                    (funcall (intern #.(string :run-test-system) :prove.asdf) c)))
