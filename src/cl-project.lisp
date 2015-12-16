@@ -65,6 +65,9 @@
 (defun copy-directory (source-dir target-dir)
   "Copy a directory recursively."
   (ensure-directories-exist target-dir)
+  ;; Older ASDF/UIOP's uiop:directory-files returns also directories on Linux.
+  ;; The bug had been fixed at ASDF 3.1.0.64 (https://bugs.launchpad.net/asdf/+bug/1276748), however, it's safe to filter directories anyway.
+  ;; ref. https://github.com/fukamachi/cl-project/pull/17
   (loop for file in (set-difference (uiop:directory-files source-dir) (uiop:subdirectories source-dir) :test #'equal)
      do (copy-file-to-dir file target-dir))
   (loop for dir in (uiop:subdirectories source-dir)
