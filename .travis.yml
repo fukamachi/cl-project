@@ -16,6 +16,7 @@ env:
 install:
   # Install Roswell
   - curl -L https://raw.githubusercontent.com/fukamachi/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
+  - ros setup
   - ros install prove
 
 cache:
