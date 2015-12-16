@@ -4,8 +4,9 @@ sudo: false
 env:
   global:
     - PATH=~/.roswell/bin:$PATH
-    - ROSWELL_BRANCH=release
+    - ROSWELL_BRANCH=latest-asdf
     - ROSWELL_INSTALL_DIR=$HOME/.roswell
+    - ROSWELL_LATEST_ASDF=1
   matrix:
     - LISP=sbcl-bin
     - LISP=sbcl-bin/1.1.8
@@ -13,7 +14,7 @@ env:
 
 install:
   # Install Roswell
-  - curl -L https://raw.githubusercontent.com/snmsts/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
+  - curl -L https://raw.githubusercontent.com/fukamachi/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
   - ros install prove
 
 cache:
