@@ -39,6 +39,8 @@
       "Sample project was generated")
   #+quicklisp
   (ok (ql:quickload :cl-project-caveman)
-      "Can load the new project"))
+      "Can load the new project")
+  #-quicklisp
+  (skip 1 "Can load the new project"))
 
 (finalize)
