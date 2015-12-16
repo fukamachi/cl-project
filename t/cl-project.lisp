@@ -19,12 +19,26 @@
 
 (uiop:delete-directory-tree *sample-project-directory* :validate t :if-does-not-exist :ignore)
 
-(cl-project:make-project *sample-project-directory*)
+(subtest "normal case"
+  (cl-project:make-project *sample-project-directory*)
+  (ok (uiop:directory-exists-p *sample-project-directory*)
+      "Sample project was generated")
+  (ok (asdf:load-system :cl-project-sample)
+      "Can load the new project"))
 
-(ok (uiop:directory-exists-p *sample-project-directory*)
-    "Sample project was generated")
+(defvar *sample-caveman-directory*
+  (asdf:system-relative-pathname
+   :cl-project
+   #P"t/cl-project-caveman/"))
 
-(ok (asdf:load-system :cl-project-sample)
-    "Can load the new project")
+(uiop:delete-directory-tree *sample-caveman-directory* :validate t :if-does-not-exist :ignore)
+
+(subtest "Caveman2"
+  (caveman2:make-project *sample-caveman-directory*)
+  (ok (uiop:directory-exists-p *sample-caveman-directory*)
+      "Sample project was generated")
+  #+quicklisp
+  (ok (ql:quickload :cl-project-caveman)
+      "Can load the new project"))
 
 (finalize)
