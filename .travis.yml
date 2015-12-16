@@ -4,7 +4,8 @@ sudo: false
 env:
   global:
     - PATH=~/.roswell/bin:$PATH
-    - ROSWELL_BRANCH=latest-asdf
+    - ROSWELL_BRANCH=release-latest-asdf
+    - ROSWELL_REPO=https://github.com/fukamachi/roswell
     - ROSWELL_INSTALL_DIR=$HOME/.roswell
     - ROSWELL_LATEST_ASDF=1
   matrix:
