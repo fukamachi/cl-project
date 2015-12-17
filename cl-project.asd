@@ -18,7 +18,7 @@
 (in-package :cl-project-asd)
 
 (defsystem cl-project
-  :version "0.1"
+  :version "0.2"
   :author "Eitaro Fukamachi"
   :license "LLGPL"
   :depends-on (:cl-emb
