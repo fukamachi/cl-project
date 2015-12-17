@@ -34,4 +34,4 @@
       (copy-file-to-file (merge-pathnames (template-file-path file)
                                           *skeleton-directory*)
                          target-path)
-      target-path)))
+      (list target-path))))

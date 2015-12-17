@@ -28,18 +28,14 @@
          *default-skeleton-directory*))
 
 (defmethod generate ((skeleton skeleton) target-dir)
-  (mapcan (lambda (child)
-            (unless (and (getf *skeleton-parameters* :without-tests)
-                         (default-skeleton-p skeleton)
-                         (or
-                          ;; Skip test ASD file
-                          (string= (file-namestring (template-file-path child))
-                                   "skeleton-test.asd")
-                          ;; Skip test files
-                          (ppcre:scan "t/skeleton\\.lisp$"
-                                      (namestring (template-file-path child)))))
-              (list (generate child target-dir))))
-          (skeleton-children skeleton)))
+  (let ((app (lambda (file)
+               (generate file target-dir))))
+    (when (and (getf *skeleton-parameters* :without-tests)
+               (default-skeleton-p skeleton))
+      (setf app
+            (funcall cl-project.middleware:*without-tests*
+                     app)))
+    (mapcan app (skeleton-children skeleton))))
 
 (defun maptree (fn path)
   (flet ((directory-files (path)
