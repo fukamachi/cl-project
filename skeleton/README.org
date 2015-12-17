@@ -2,8 +2,6 @@
 
 ** Usage
 
-** Dependencies
-
 ** Installation
 <%- @if author %>
 
