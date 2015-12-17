@@ -15,7 +15,7 @@
 
 (defun make-project (path &rest params &key name description author email license depends-on &allow-other-keys)
   "Generate a skeleton."
-  (declare (ignorable name description author email license depends-on))
+  (declare (ignore name description author email license depends-on))
   (check-type path pathname)
 
   ;; Ensure `path' ends with a slash(/).
