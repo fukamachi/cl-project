@@ -1,7 +1,8 @@
 (in-package :cl-user)
 (defpackage cl-project.specials
   (:use #:cl)
-  (:export #:*skeleton-directory*
+  (:export #:*default-skeleton-directory*
+           #:*skeleton-directory*
            #:*skeleton-parameters*))
 (in-package :cl-project.specials)
 

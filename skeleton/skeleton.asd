@@ -46,4 +46,6 @@
                                :fill-pointer t)))
           (setf (fill-pointer seq) (read-sequence seq stream))
           seq)))
-  :in-order-to ((test-op (test-op <% @var name %>-test))))
+  <%- @unless without-tests %>
+  :in-order-to ((test-op (test-op <% @var name %>-test)))
+  <%- @endunless %>)

@@ -7,6 +7,7 @@
   (:import-from #:cl-ppcre
                 #:regex-replace-all)
   (:export #:template-file
+           #:template-file-path
            #:make-template-file
            #:generate))
 (in-package :cl-project.file)

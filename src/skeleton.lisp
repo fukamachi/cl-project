@@ -1,8 +1,10 @@
 (in-package :cl-user)
 (defpackage cl-project.skeleton
-  (:use #:cl)
+  (:use #:cl
+        #:cl-project.specials)
   (:import-from #:cl-project.file
                 #:make-template-file
+                #:template-file-path
                 #:generate)
   (:export #:skeleton
            #:make-skeleton
@@ -10,17 +12,33 @@
 (in-package :cl-project.skeleton)
 
 (defclass skeleton ()
-  ((children :type list
+  ((path :type pathname
+         :initarg :path
+         :accessor skeleton-path)
+   (children :type list
              :initarg :children
              :initform '()
              :accessor skeleton-children)))
 
-(defun make-skeleton (children)
-  (make-instance 'skeleton :children children))
+(defun make-skeleton (path children)
+  (make-instance 'skeleton :path path :children children))
+
+(defun default-skeleton-p (skeleton)
+  (equal (skeleton-path skeleton)
+         *default-skeleton-directory*))
 
 (defmethod generate ((skeleton skeleton) target-dir)
-  (mapcar (lambda (child)
-            (generate child target-dir))
+  (mapcan (lambda (child)
+            (unless (and (getf *skeleton-parameters* :without-tests)
+                         (default-skeleton-p skeleton)
+                         (or
+                          ;; Skip test ASD file
+                          (string= (file-namestring (template-file-path child))
+                                   "skeleton-test.asd")
+                          ;; Skip test files
+                          (ppcre:scan "t/skeleton\\.lisp$"
+                                      (namestring (template-file-path child)))))
+              (list (generate child target-dir))))
           (skeleton-children skeleton)))
 
 (defun maptree (fn path)
@@ -48,6 +66,7 @@
              (namestring path)
              (length (namestring directory))))))
     (make-skeleton
+     directory
      (maptree (lambda (file)
                 (make-template-file (relative-path file)))
               directory))))

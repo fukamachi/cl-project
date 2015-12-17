@@ -30,7 +30,7 @@
                 :components
                 ((:file "cl-project" :depends-on ("specials" "file" "skeleton"))
                  (:file "file" :depends-on ("specials" "io"))
-                 (:file "skeleton" :depends-on ("file"))
+                 (:file "skeleton" :depends-on ("specials" "file"))
                  (:file "io" :depends-on ("specials"))
                  (:file "specials"))))
   :description "Generate a skeleton for modern project"

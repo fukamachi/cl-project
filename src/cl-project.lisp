@@ -13,7 +13,7 @@
            #:generate-skeleton))
 (in-package :cl-project)
 
-(defun make-project (path &rest params &key name description author email license depends-on &allow-other-keys)
+(defun make-project (path &rest params &key name description author email license depends-on (without-tests nil) &allow-other-keys)
   "Generate a skeleton."
   (declare (ignore name description author email license depends-on))
   (check-type path pathname)
