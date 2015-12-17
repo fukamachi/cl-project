@@ -5,19 +5,20 @@
 
 ## Usage
 
-    (cl-project:make-project #p"lib/cl-sample/"
-      :author "Eitaro Fukamachi"
-      :email "e.arrows@gmail.com"
-      :license "LLGPL"
-      :depends-on '(clack cl-annot))
-    
-    ;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
-        writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
-        writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample-test.asd
-        writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample.asd
-        writing /Users/fukamachi/Programs/lib/cl-sample/src/hogehoge.lisp
-        writing /Users/fukamachi/Programs/lib/cl-sample/t/hogehoge.lisp
-    ;=> T
+```common-lisp
+(cl-project:make-project #p"lib/cl-sample/"
+  :author "Eitaro Fukamachi"
+  :email "e.arrows@gmail.com"
+  :license "LLGPL"
+  :depends-on '(:clack :cl-annot))
+;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
+;   writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
+;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample-test.asd
+;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample.asd
+;   writing /Users/fukamachi/Programs/lib/cl-sample/src/hogehoge.lisp
+;   writing /Users/fukamachi/Programs/lib/cl-sample/t/hogehoge.lisp
+;=> T
+```
 
 ## What's the difference from other generators?
 
