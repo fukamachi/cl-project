@@ -24,12 +24,15 @@
   :depends-on (:cl-emb
                :uiop
                :cl-ppcre
-               :cl-syntax-annot
                :local-time
                :prove)
   :components ((:module "src"
                 :components
-                ((:file "cl-project"))))
+                ((:file "cl-project" :depends-on ("specials" "file" "skeleton"))
+                 (:file "file" :depends-on ("specials" "io"))
+                 (:file "skeleton" :depends-on ("file"))
+                 (:file "io" :depends-on ("specials"))
+                 (:file "specials"))))
   :description "Generate a skeleton for modern project"
   :long-description
   #.(with-open-file (stream (merge-pathnames
