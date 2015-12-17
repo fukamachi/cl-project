@@ -23,15 +23,10 @@
 (defun make-skeleton (path children)
   (make-instance 'skeleton :path path :children children))
 
-(defun default-skeleton-p (skeleton)
-  (equal (skeleton-path skeleton)
-         *default-skeleton-directory*))
-
 (defmethod generate ((skeleton skeleton) target-dir)
   (let ((app (lambda (file)
                (generate file target-dir))))
-    (when (and (getf *skeleton-parameters* :without-tests)
-               (default-skeleton-p skeleton))
+    (when (getf *skeleton-parameters* :without-tests)
       (setf app
             (funcall cl-project.middleware:*without-tests*
                      app)))
