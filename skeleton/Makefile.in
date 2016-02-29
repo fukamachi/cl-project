@@ -1,0 +1,35 @@
+APPLICATION_NAME=<% @var name %>
+
+LISP=@LISP_PROGRAM@
+
+ecl_BUILDOPTS=-shell ./compile.lisp
+sbcl_BUILDOPTS=--load ./compile.lisp
+
+ecl_BUILDOPTS_RUN_TEST=-eval "(asdf:test-system :$(APPLICATION_NAME)-test)"
+sbcl_BUILDOPTS_RUN_TEST= --non-interactive --eval "(asdf:test-system :$(APPLICATION_NAME)-test)"
+
+datarootdir = @datarootdir@
+prefix=@prefix@
+exec_prefix= @exec_prefix@
+bindir=@bindir@
+
+FILES=$(APPLICATION_NAME).asd
+
+all: $(APPLICATION_NAME)
+
+$(APPLICATION_NAME): $(FILES)
+	$(LISP) $(@LISP@_BUILDOPTS)
+
+clean:
+	rm -f *.fasl *.fas *.lib *.*fsl
+	rm -f $(APPLICATION_NAME)
+
+check: all
+	$(LISP) $(@LISP@_BUILDOPTS_RUN_TEST)
+
+install: all
+	test -z "$(destdir)$(bindir)" || mkdir -p "$(destdir)$(bindir)"
+	install -m 755 $(APPLICATION_NAME) "$(destdir)$(bindir)"
+
+uninstall:
+	rm "$(destdir)$(bindir)/$(APPLICATION_NAME)"
