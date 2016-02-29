@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT(<% @var name %>, 1.0, richard.baeck@free-your-pc.com)
+AC_INIT(<% @var name %>, 1.0, <% @var email %>)
 
 AC_SUBST(LISP_PROGRAM)
 AC_SUBST(LISP)
