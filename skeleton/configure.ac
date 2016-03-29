@@ -9,7 +9,7 @@ AC_SUBST(<% @var name %>_ASDF_DIR)
 AC_ARG_WITH(lisp,    [  --with-lisp=IMPL        use the specified lisp (sbcl, clisp, ccl or ecl)], LISP=$withval, LISP="any")
 AC_ARG_WITH(ecl,     [  --with-ecl=PATH         specify location of ecl], ECL_PATH=$withval, ECL_PATH="")
 AC_ARG_WITH(sbcl,    [  --with-sbcl=PATH        specify location of sbcl], SBCL_PATH=$withval, SBCL_PATH="")
-
+AC_ARG_WITH(ccl,     [  --with-ccl=PATH         specify location of ccl], CCL_PATH=$withval, CCL_PATH="")
 
 <% @var name %>_ASDF_DIR="`pwd`"
 
@@ -29,18 +29,30 @@ else
    AC_PATH_PROG([SBCL], sbcl,"")
 fi
 
+if test -x "$CCL_PATH"; then
+   CCL=$CCL_PATH
+   AC_MSG_CHECKING([for ccl])
+   AC_MSG_RESULT($CCL)
+else
+   AC_PATH_PROG([CCL],ccl,"")
+fi
+
 if test "x$LISP" = "xany"; then
    if test "$SBCL"; then
       LISP=sbcl
    elif test "$ECL"; then
       LISP=ecl
    fi
+   elif test "$CCL"; then
+      LISP=ccl
 fi
 
 if test "x$LISP" = "xecl"; then
    LISP_PROGRAM=$ECL
 elif test "x$LISP" = "xsbcl"; then
    LISP_PROGRAM=$SBCL
+elif test "x$LISP" = "xccl"; then
+   LISP_PROGRAM=$CCL
 fi
 
 if test "x$LISP_PROGRAM" = "x"; then

@@ -37,9 +37,6 @@
            ;; Older ASDF/UIOP's uiop:directory-files returns also directories on Linux.
            ;; The bug had been fixed at ASDF 3.1.0.64 (https://bugs.launchpad.net/asdf/+bug/1276748), however, it's safe to filter directories anyway.
            ;; ref. https://github.com/fukamachi/cl-project/pull/17
-           (print (set-difference (uiop:directory-files path)
-                                  (uiop:subdirectories path)
-                                  :test #'equal))
            (remove-if #'(lambda (file)
                           (declare (pathname file))
                           (let ((is-application-file

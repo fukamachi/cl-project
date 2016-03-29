@@ -18,3 +18,7 @@
                  :epilogue-code '(progn
                                   (<% @var name %>:main (ext:command-args))))
 
+#+ccl
+(ccl:save-application "<% @var name %>"
+                      :prepend-kernel t
+                      :toplevel-function #'<% @var name %>:main)
