@@ -49,7 +49,8 @@ quicklisp/asdf search path and you are good to go for a compilation by
 simply:
 ```sh
 sh autogen.sh
-./configure
+./configure # use the default installed Lisp
+./configure --with-lisp=ecl # use ECL for the compilation
 make check # runs asdf:test-system
 make # generates the executable
 ```
@@ -76,3 +77,8 @@ Copyright (c) 2011 Eitaro Fukamachi (e.arrows@gmail.com)
 ## License
 
 Licensed under the LLGPL License.
+
+All the application skeleton parts are taken from
+[stumpWM](https://github.com/stumpwm/stumpwm) which is licensed as
+GPLv2. Therefore if you use the skeleton files for an application you
+transform your project to GPLv2 too.
