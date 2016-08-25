@@ -65,6 +65,7 @@ All parameters are optional.
 * `:email`: Your e-mail address.
 * `:license`: License of the new project.
 * `:depends-on`: A list of dependencies.
+* `:application`: If non-nil the GNU autotools skeleton will be added too.
 
 ## Author
 
