@@ -32,6 +32,9 @@
       (when (string= (pathname-type file) "asd")
         (let* ((dir (make-pathname :name nil :type nil :defaults file))
                (asdf:*central-registry* (cons dir asdf:*central-registry*)))
+          #+quicklisp
+          (ql:quickload (pathname-name file))
+          #-quicklisp
           (asdf:load-system (pathname-name file))))))
   t)
 
