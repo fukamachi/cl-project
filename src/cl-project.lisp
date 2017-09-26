@@ -28,10 +28,11 @@
                 *skeleton-directory*
                 path
                 :env params)))
-    (map nil #'load
-         (remove-if-not (lambda (path)
-                          (string= (pathname-type path) "asd"))
-                        files)))
+    (dolist (file files)
+      (when (string= (pathname-type file) "asd")
+        (let* ((dir (make-pathname :name nil :type nil :defaults file))
+               (asdf:*central-registry* (cons dir asdf:*central-registry*)))
+          (asdf:load-system (pathname-name file))))))
   t)
 
 (defun generate-skeleton (source-dir target-dir &key env)
