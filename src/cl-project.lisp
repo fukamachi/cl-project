@@ -30,12 +30,8 @@
                 :env params)))
     (dolist (file files)
       (when (string= (pathname-type file) "asd")
-        (let* ((dir (make-pathname :name nil :type nil :defaults file))
-               (asdf:*central-registry* (cons dir asdf:*central-registry*)))
-          #+quicklisp
-          (ql:quickload (pathname-name file))
-          #-quicklisp
-          (asdf:load-system (pathname-name file))))))
+        (let ((dir (make-pathname :name nil :type nil :defaults file)))
+          (push dir asdf:*central-registry*)))))
   t)
 
 (defun generate-skeleton (source-dir target-dir &key env)
