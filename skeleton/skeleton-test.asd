@@ -5,21 +5,15 @@
 <%- @endif %>
 |#
 
-(in-package :cl-user)
-(defpackage <% @var name %>-test-asd
-  (:use :cl :asdf))
-(in-package :<% @var name %>-test-asd)
-
-(defsystem <% @var name %>-test
+(defsystem "<% @var name %>-test"
+  :defsystem-depends-on ("prove-asdf")
   :author "<% @var author %>"
   :license "<% @var license %>"
-  :depends-on (:<% @var name %>
-               :prove)
+  :depends-on ("<% @var name %>"
+               "prove")
   :components ((:module "t"
                 :components
                 ((:test-file "<% @var name %>"))))
   :description "Test system for <% @var name %>"
 
-  :defsystem-depends-on (:prove-asdf)
-  :perform (test-op :after (op c)
-                    (funcall (intern #.(string :run-test-system) :prove-asdf) c)))
+  :perform (test-op (op c) (symbol-call :prove-asdf :run-test-system c)))

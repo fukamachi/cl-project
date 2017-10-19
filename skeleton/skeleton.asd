@@ -19,33 +19,19 @@
 <%- @endif %>
 |#
 <% ) %>
-(in-package :cl-user)
-(defpackage <% @var name %>-asd
-  (:use :cl :asdf))
-(in-package :<% @var name %>-asd)
-
-(defsystem <% @var name %>
-  :version "0.1"
+(defsystem "<% @var name %>"
+  :version "0.1.0"
   :author "<% @var author %>"
   :license "<% @var license %>"
-  :depends-on (<% (format t "~{:~(~A~)~^~%               ~}"
+  :depends-on (<% (format t "~{\"~(~A~)\"~^~%               ~}"
                           (getf env :depends-on)) %>)
   :components ((:module "src"
                 :components
                 ((:file "<% @var name %>"))))
   :description "<% @var description %>"
   :long-description
-  #.(with-open-file (stream (merge-pathnames
-                             #p"README.markdown"
-                             (or *load-pathname* *compile-file-pathname*))
-                            :if-does-not-exist nil
-                            :direction :input)
-      (when stream
-        (let ((seq (make-array (file-length stream)
-                               :element-type 'character
-                               :fill-pointer t)))
-          (setf (fill-pointer seq) (read-sequence seq stream))
-          seq)))
+  #.(read-file-string
+     (subpathname *load-pathname* "README.markdown"))
   <%- @unless without-tests %>
-  :in-order-to ((test-op (test-op <% @var name %>-test)))
+  :in-order-to ((test-op (test-op "<% @var name %>-test")))
   <%- @endunless %>)
