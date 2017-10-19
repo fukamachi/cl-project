@@ -1,4 +1,3 @@
-(in-package :cl-user)
 (defpackage <% @var name %>-test
   (:use :cl
         :<% @var name %>
