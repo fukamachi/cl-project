@@ -4,28 +4,15 @@ sudo: false
 env:
   global:
     - PATH=~/.roswell/bin:$PATH
-    - ROSWELL_BRANCH=release-latest-asdf
-    - ROSWELL_REPO=https://github.com/fukamachi/roswell
     - ROSWELL_INSTALL_DIR=$HOME/.roswell
-    - ROSWELL_LATEST_ASDF=1
   matrix:
     - LISP=sbcl-bin
-    - LISP=sbcl-bin/1.1.8
     - LISP=ccl-bin
 
 install:
   # Install Roswell
-  - curl -L https://raw.githubusercontent.com/fukamachi/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
+  - curl -L https://raw.githubusercontent.com/roswell/roswell/release/scripts/install-for-ci.sh | sh
   - ros install prove
-
-cache:
-  directories:
-    - $HOME/.roswell
-    - $HOME/.config/common-lisp
-
-before_script:
-  - ros --version
-  - ros config
 
 script:
   - run-prove cl-project-test.asd
