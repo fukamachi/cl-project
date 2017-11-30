@@ -12,7 +12,7 @@
   Author: Eitaro Fukamachi (e.arrows@gmail.com)
 |#
 
-(defsystem "cl-project"
+(asdf:defsystem "cl-project"
   :version "0.3"
   :author "Eitaro Fukamachi"
   :license "LLGPL"
