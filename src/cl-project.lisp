@@ -1,6 +1,7 @@
 (in-package :cl-user)
 (defpackage cl-project
   (:use #:cl)
+  (:nicknames :clp)
   (:import-from #:cl-project.specials
                 #:*skeleton-directory*
                 #:*skeleton-parameters*)
