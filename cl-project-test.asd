@@ -7,7 +7,8 @@
   :defsystem-depends-on ("prove-asdf")
   :author "Eitaro Fukamachi"
   :license "LLGPL"
-  :depends-on ("cl-project"
+  :depends-on ("cl-emb"
+               "cl-project"
                "prove"
                "caveman2"
                "uiop")
