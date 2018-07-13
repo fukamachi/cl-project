@@ -37,7 +37,7 @@ A command-line interface for cl-project:make-project.
     (let ((path (pop args)))
       (when (starts-with-subseq "--" path)
         (terminate "No path given."))
-      (cons path
+      (cons (pathname path)
             (loop for index from 0 below (length args)
                   for first = (elt args index)
                   for rest = (subseq args (incf index))
