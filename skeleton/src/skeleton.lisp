@@ -1,5 +1,13 @@
 (defpackage <% @var name %>
-  (:use :cl))
+            (:use :cl)<% @if application %>(:export :main)<% @endif %>)
 (in-package :<% @var name %>)
 
-;; blah blah blah.
+
+<% @if application %>
+(defun main (args)
+  ;; Here will be your application
+  0 ;; return code
+  )
+<% @else %>
+;; Here will be your applicaton/library
+<% @endif %>

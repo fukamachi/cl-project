@@ -24,15 +24,36 @@
 
 ### 1. Flexible templates
 
-CL-Project supports more parameters to embed, by using [CL-EMB](http://common-lisp.net/project/cl-emb/) to represent the skeleton files (See "cl-project/skeleton/").
+CL-Project supports more parameters to embed, by using
+[CL-EMB](http://common-lisp.net/project/cl-emb/) to represent the
+skeleton files (See "cl-project/skeleton/").
 
 ### 2. One package per file style (Modern)
 
-A modern CL project should be in accordance with [some rules](http://labs.ariel-networks.com/cl-style-guide.html). For instance, one file must have one package in it.
+A modern CL project should be in accordance with
+[some rules](http://labs.ariel-networks.com/cl-style-guide.html). For
+instance, one file must have one package in it.
 
 ### 3. Recommends unit testing
 
-Modern projects should have some unit tests. CL-Project generates a system for unit testing, so you can begin writing unit tests as soon as the project is generated.
+Modern projects should have some unit tests. CL-Project generates a
+system for unit testing, so you can begin writing unit tests as soon
+as the project is generated.
+
+### 4. Possbile integration with the GNU autotools
+
+It is possible to generate a Makefile with GNU autools which compiles
+your Application. Simply add :APPLICATION T to get those scripts
+included! Just make sure that the generated project lies on the
+quicklisp/asdf search path and you are good to go for a compilation by
+simply:
+```sh
+sh autogen.sh
+./configure # use the default installed Lisp
+./configure --with-lisp=ecl # use ECL for the compilation
+make check # runs asdf:test-system
+make # generates the executable
+```
 
 ## Parameters
 
@@ -44,6 +65,7 @@ All parameters are optional.
 * `:email`: Your e-mail address.
 * `:license`: License of the new project.
 * `:depends-on`: A list of dependencies.
+* `:application`: If non-nil the GNU autotools skeleton will be added too.
 
 ## Author
 
@@ -56,3 +78,8 @@ Copyright (c) 2011 Eitaro Fukamachi (e.arrows@gmail.com)
 ## License
 
 Licensed under the LLGPL License.
+
+All the application skeleton parts are taken from
+[stumpWM](https://github.com/stumpwm/stumpwm) which is licensed as
+GPLv2. Therefore if you use the skeleton files for an application you
+transform your project to GPLv2 too.
