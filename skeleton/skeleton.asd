@@ -19,7 +19,7 @@
 <%- @endif %>
 |#
 <% ) %>
-(defsystem "<% @var name %>"
+(asdf:defsystem "<% @var name %>"
   :version "0.1.0"
   :author "<% @var author %>"
   :license "<% @var license %>"

@@ -5,7 +5,7 @@
 <%- @endif %>
 |#
 
-(defsystem "<% @var name %>-test"
+(asdf:defsystem "<% @var name %>-test"
   :defsystem-depends-on ("prove-asdf")
   :author "<% @var author %>"
   :license "<% @var license %>"
