@@ -10,6 +10,7 @@
   :depends-on ("cl-project"
                "prove"
                "caveman2"
+               "clack"
                "uiop")
   :components ((:module "tests"
                 :components
