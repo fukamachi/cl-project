@@ -45,6 +45,9 @@ All parameters are optional.
 * `:license`: License of the new project.
 * `:depends-on`: A list of dependencies.
 
+## See Also
+- [Rove](https://github.com/fukamachi/rove) - Testing framework
+
 ## Author
 
 * Eitaro Fukamachi (e.arrows@gmail.com)
