@@ -15,4 +15,5 @@ install:
   - ros install prove
 
 script:
+  - ros -s cl-project-test
   - run-prove cl-project-test.asd
