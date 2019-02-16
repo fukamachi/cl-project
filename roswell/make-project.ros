@@ -15,7 +15,7 @@ A command-line interface for cl-project:make-project.
 
 (defun help ()
   (format t "~&Usage:
-    make-project /home/user/common-lisp/sample --name sample --description \"sample project.\" --author \"Your name\" --license LLGPL --depends-on alexandria split-sequence"))
+    make-project /home/user/common-lisp/sample --name sample --description \"sample project.\" --author \"Your name\" --license LLGPL --depends-on alexandria split-sequence~%"))
 
 (defun terminate (&optional message args)
   (when message
