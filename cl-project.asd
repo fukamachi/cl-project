@@ -13,7 +13,7 @@
 |#
 
 (defsystem "cl-project"
-  :version "0.3"
+  :version "0.3.1"
   :author "Eitaro Fukamachi"
   :license "LLGPL"
   :depends-on ("cl-emb"
