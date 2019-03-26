@@ -30,7 +30,4 @@
                  (:file "middleware" :depends-on ("file"))
                  (:file "specials"))))
   :description "Generate a skeleton for modern project"
-  :long-description
-  #.(read-file-string
-     (subpathname *load-pathname* "README.markdown"))
   :in-order-to ((test-op (test-op "cl-project-test"))))

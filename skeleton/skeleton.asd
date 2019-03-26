@@ -8,9 +8,6 @@
                 :components
                 ((:file "main"))))
   :description "<% @var description %>"
-  :long-description
-  #.(read-file-string
-     (subpathname *load-pathname* "README.markdown"))
   <%- @unless without-tests %>
   :in-order-to ((test-op (test-op "<% @var name %>/tests")))
   <%- @endunless %>)
@@ -24,5 +21,4 @@
                 :components
                 ((:file "main"))))
   :description "Test system for <% @var name %>"
-
   :perform (test-op (op c) (symbol-call :rove :run c)))
