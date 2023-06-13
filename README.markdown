@@ -44,6 +44,7 @@ All parameters are optional.
 * `:email`: Your e-mail address.
 * `:license`: License of the new project.
 * `:depends-on`: A list of dependencies.
+* `:without-tests`: If true, then no testing system, folder, and file are generated. Default: nil.
 
 ## See Also
 - [Rove](https://github.com/fukamachi/rove) - Testing framework
