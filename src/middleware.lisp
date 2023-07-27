@@ -9,7 +9,7 @@
 (defparameter *without-tests*
   (lambda (app &key
             (test-asd "skeleton-test.asd")
-            (test-directory #P"t/"))
+            (test-directory #P"tests/"))
     (lambda (file)
       (unless (or
                ;; Skip test ASD file
