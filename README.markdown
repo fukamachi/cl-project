@@ -7,9 +7,18 @@
 
 ```common-lisp
 (cl-project:make-project #p"lib/cl-sample/"
+  :name "cl-sample"
+  :long-name "common-lisp-sample"
   :author "Eitaro Fukamachi"
+  :maintainer "Eitaro Fukamachi"
   :email "e.arrows@gmail.com"
   :license "LLGPL"
+  :homepage "https://github.com/fukamachi/cl-project"
+  :bug-tracker "https://github.com/fukamachi/cl-project/issues"
+  :source-control "https://github.com/fukamachi/cl-project.git"
+  :version "0.1.1"
+  :description "Sample library"
+  :long-description "Common Lisp sample library"
   :depends-on '(:clack :cl-annot))
 ;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
@@ -39,10 +48,17 @@ Modern projects should have some unit tests. CL-Project generates a system for u
 All parameters are optional.
 
 * `:name`: Project name. If this key isn't specified, the directory name will be used.
+* `:long-name`: Project name long form.
 * `:description`: Short description for the new project.
+* `:long-description`: Long description for the new project.
+* `:version`: Project version.
 * `:author`: Your name.
+* `:maintainer`: Project maintainer.
 * `:email`: Your e-mail address.
 * `:license`: License of the new project.
+* `:homepage`: Project homepage.
+* `:bug-tracker`: Project bug-tracker. E.g. Git issue tracker.
+* `:source-control`: Project source-control.
 * `:depends-on`: A list of dependencies.
 * `:without-tests`: If true, then no testing system, folder, and file are generated. Default: nil.
 
