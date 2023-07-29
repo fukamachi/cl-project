@@ -23,9 +23,9 @@
 (defun make-skeleton (path children)
   (make-instance 'skeleton :path path :children children))
 
-(defmethod generate ((skeleton skeleton) target-dir)
+(defmethod generate ((skeleton skeleton) target-dir &key verbose)
   (let ((app (lambda (file)
-               (generate file target-dir))))
+               (generate file target-dir :verbose verbose))))
     (when (getf *skeleton-parameters* :without-tests)
       (setf app
             (funcall cl-project.middleware:*without-tests*

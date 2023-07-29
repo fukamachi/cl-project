@@ -61,6 +61,7 @@ All parameters are optional.
 * `:source-control`: Project source-control.
 * `:depends-on`: A list of dependencies.
 * `:without-tests`: If true, then no testing system, folder, and file are generated. Default: nil.
+* `:verbose`: If true, the written files directories are printed to the standard output. Default: t.
 
 ## See Also
 - [Rove](https://github.com/fukamachi/rove) - Testing framework
