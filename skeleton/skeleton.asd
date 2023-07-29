@@ -2,7 +2,11 @@
   <%- @if long-name %>
   :long-name "<% @var long-name %>"
   <%- @endif %>
+  <%- @if version %>
   :version "<% @var version %>"
+  <%- @else %>
+  :version "0.0.1"
+  <%- @endif %>
   :author "<% @var author %>"
   <%- @if maintainer %>
   :maintainer "<% @var maintainer %>"
