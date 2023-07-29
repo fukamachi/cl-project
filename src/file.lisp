@@ -20,8 +20,8 @@
 (defun make-template-file (path)
   (make-instance 'template-file :path path))
 
-(defgeneric generate (file target-dir)
-  (:method ((file template-file) target-dir)
+(defgeneric generate (file target-dir &key verbose)
+  (:method ((file template-file) target-dir &key verbose)
     (let ((target-path
             (merge-pathnames (template-file-path file) target-dir)))
       (when (search "skeleton" (pathname-name target-path))
@@ -33,5 +33,6 @@
                              :defaults target-path)))
       (copy-file-to-file (merge-pathnames (template-file-path file)
                                           *skeleton-directory*)
-                         target-path)
+                         target-path
+                         :verbose verbose)
       (list target-path))))
