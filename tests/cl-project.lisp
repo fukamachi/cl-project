@@ -1,8 +1,3 @@
-#|
-  This file is a part of CL-Project project.
-  Copyright (c) 2011 Eitaro Fukamachi (e.arrows@gmail.com)
-|#
-
 (in-package :cl-user)
 (defpackage cl-project-test
   (:use :cl

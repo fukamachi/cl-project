@@ -1,21 +1,7 @@
-#|
-  This file is a part of CL-Project package.
-  URL: http://github.com/fukamachi/cl-project
-  Copyright (c) 2011 Eitaro Fukamachi <e.arrows@gmail.com>
-
-  CL-Project is freely distributable under the LLGPL License.
-|#
-
-#|
-  Generate a skeleton for modern project
-
-  Author: Eitaro Fukamachi (e.arrows@gmail.com)
-|#
-
 (defsystem "cl-project"
   :version "0.3.1"
   :author "Eitaro Fukamachi"
-  :license "LLGPL"
+  :license "MIT"
   :depends-on ("cl-emb"
                "uiop"
                "cl-ppcre"

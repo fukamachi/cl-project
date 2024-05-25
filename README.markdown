@@ -12,7 +12,7 @@
   :author "Eitaro Fukamachi"
   :maintainer "Eitaro Fukamachi"
   :email "e.arrows@gmail.com"
-  :license "LLGPL"
+  :license "MIT"
   :homepage "https://github.com/fukamachi/cl-project"
   :bug-tracker "https://github.com/fukamachi/cl-project/issues"
   :source-control "https://github.com/fukamachi/cl-project.git"
@@ -76,4 +76,4 @@ Copyright (c) 2011 Eitaro Fukamachi (e.arrows@gmail.com)
 
 ## License
 
-Licensed under the LLGPL License.
+Licensed under the MIT License.
