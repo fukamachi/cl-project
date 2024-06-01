@@ -19,7 +19,10 @@
   :version "0.1.1"
   :description "Sample library"
   :long-description "Common Lisp sample library"
-  :depends-on '(:clack :cl-annot))
+  :depends-on '(:clack :cl-annot)
+  :use '(:alexandria)
+  :import-from '(:clack (:dexador :get :post))
+  :export '(:sample-symbol1 :symbol-2))
 ;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample-test.asd
@@ -59,9 +62,12 @@ All parameters are optional.
 * `:homepage`: Project homepage.
 * `:bug-tracker`: Project bug-tracker. E.g. Git issue tracker.
 * `:source-control`: Project source-control.
-* `:depends-on`: A list of dependencies.
+* `:depends-on`: A list of dependencies for the system definition. If `use` or `import-from` is specified, the respective packages are added to this list automatically.
 * `:without-tests`: If true, then no testing system, folder, and file are generated. Default: nil.
 * `:verbose`: If true, the written files directories are printed to the standard output. Default: t.
+* `:use`: A list of packages that will be in the use-clause of the package definition. If you do not want to use any package, then supply `nil`. Default value: `'(:cl)`.
+* `:import-from`: A list of packages and symbols that will be in import-from-clauses in the package definition. Value can be a list or nested list.
+* `:export`: A list of symbols that will be exported from the package definition.
 
 ## See Also
 - [Rove](https://github.com/fukamachi/rove) - Testing framework

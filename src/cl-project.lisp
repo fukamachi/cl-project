@@ -15,19 +15,41 @@
 
 (defun make-project (path &rest params &key name long-name version description long-description
                                          author maintainer email license homepage bug-tracker
-                                         source-control depends-on
+                                         source-control depends-on (use nil use-p) import-from export
                                          (without-tests nil) (verbose t) &allow-other-keys)
   "Generate a skeleton."
   (declare (ignore name long-name version description long-description author maintainer
-                   email license homepage bug-tracker source-control depends-on without-tests))
+                   email license homepage bug-tracker source-control depends-on without-tests
+		   export))
   (check-type path pathname)
 
   ;; Ensure `path' ends with a slash(/).
   (setf path (uiop:ensure-directory-pathname path))
-
+  (unless use-p
+    (setf (getf params :use)
+	  (list :cl)))
   (unless (getf params :name)
     (setf (getf params :name)
           (car (last (pathname-directory path)))))
+  (when (or use import-from)
+    (when use
+      (setf (getf params :depends-on)
+	    (append (getf params :depends-on) use)))
+    (when import-from
+      (setf (getf params :depends-on)
+	    (append (getf params :depends-on)
+		    (remove nil
+			    (mapcar (lambda (dependency)
+				      (cond ((consp dependency)
+					     (first dependency))
+					    ((atom dependency)
+					     dependency)))
+				    import-from)))))
+    (setf (getf params :depends-on)
+	  (remove-duplicates
+	   (remove "CL" (getf params :depends-on)
+		   :test #'string-equal)
+	   :test #'string-equal)))
   (let ((files (generate-skeleton
                 *skeleton-directory*
                 path
