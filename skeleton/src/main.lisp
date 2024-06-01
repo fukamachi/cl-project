@@ -1,5 +1,5 @@
-(defpackage <% @var name %>
+(uiop:define-package <% @var name %>
   (:use :cl))
-(in-package :<% @var name %>)
+(in-package #:<% @var name %>)
 
 ;; blah blah blah.
