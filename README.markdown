@@ -26,13 +26,17 @@
   :code '((alexandria:define-constant test-constant "hallo" :test 'string=)
           (defun test-function (user)
             "docstring"
-            (concat test-constant " " user))))
+            (concat test-constant " " user)))
+  :load-system t)
 ;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample-test.asd
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample.asd
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/src/main.lisp
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/t/main.lisp
+;
+;   compiling file "/Users/fukamachi/Programs/lib/cl-sample/src/main.lisp"
+;   compilation finished in 0:00:00.004
 ;=> T
 ```
 
@@ -73,6 +77,7 @@ All parameters are optional.
 * `:import-from`: A list of packages and symbols that will be in import-from-clauses in the package definition. Value can be a list or nested list.
 * `:export`: A list of symbols that will be exported from the package definition.
 * `:code`: Source code that will be inserted in main.lisp file. Can be nil, string, or a list of forms. Make sure to use, import-from, or qualify the necessary symbols.
+* `:load-system`: If `load-system` is not `nil`, the generated system is loaded with `asdf:load-system`. Default is `nil`.
 
 ## See Also
 - [Rove](https://github.com/fukamachi/rove) - Testing framework
