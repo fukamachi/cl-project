@@ -8,6 +8,8 @@
                 #:make-skeleton-from-directory)
   (:import-from #:cl-project.file
                 #:generate)
+  (:import-from #:asdf
+		#:load-system)
   (:export #:*skeleton-directory*
            #:make-project
            #:generate-skeleton))
@@ -16,7 +18,7 @@
 (defun make-project (path &rest params &key name long-name version description long-description
                                          author maintainer email license homepage bug-tracker
                                          source-control depends-on (use nil use-p) import-from export
-					 (code nil code-p)
+					 (code nil code-p) load-system
                                          (without-tests nil) (verbose t) &allow-other-keys)
   "Generate a skeleton."
   (declare (ignore name long-name version description long-description author maintainer
@@ -67,6 +69,8 @@
       (when (string= (pathname-type file) "asd")
         (let ((dir (make-pathname :name nil :type nil :defaults file)))
           (push dir asdf:*central-registry*)))))
+  (when load-system
+    (load-system (getf params :name)))
   t)
 
 (defun generate-skeleton (source-dir target-dir &key env verbose)
