@@ -19,16 +19,20 @@
   :version "0.1.1"
   :description "Sample library"
   :long-description "Common Lisp sample library"
-  :depends-on '(:clack :cl-annot)
-  :use '(:alexandria)
-  :import-from '(:clack (:dexador :get :post))
-  :export '(:sample-symbol1 :symbol-2))
+  :depends-on '(:clack alexandria)
+  :use '(:cl)
+  :import-from '(:clack (serapeum concat))
+  :export '(test-function test-constant)
+  :code '((alexandria:define-constant test-constant "hallo" :test 'string=)
+          (defun test-function (user)
+            "docstring"
+            (concat test-constant " " user))))
 ;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample-test.asd
 ;   writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample.asd
-;   writing /Users/fukamachi/Programs/lib/cl-sample/src/hogehoge.lisp
-;   writing /Users/fukamachi/Programs/lib/cl-sample/t/hogehoge.lisp
+;   writing /Users/fukamachi/Programs/lib/cl-sample/src/main.lisp
+;   writing /Users/fukamachi/Programs/lib/cl-sample/t/main.lisp
 ;=> T
 ```
 
@@ -68,6 +72,7 @@ All parameters are optional.
 * `:use`: A list of packages that will be in the use-clause of the package definition. If you do not want to use any package, then supply `nil`. Default value: `'(:cl)`.
 * `:import-from`: A list of packages and symbols that will be in import-from-clauses in the package definition. Value can be a list or nested list.
 * `:export`: A list of symbols that will be exported from the package definition.
+* `:code`: Source code that will be inserted in main.lisp file. Can be nil, string, or a list of forms. Make sure to use, import-from, or qualify the necessary symbols.
 
 ## See Also
 - [Rove](https://github.com/fukamachi/rove) - Testing framework

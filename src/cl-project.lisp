@@ -16,6 +16,7 @@
 (defun make-project (path &rest params &key name long-name version description long-description
                                          author maintainer email license homepage bug-tracker
                                          source-control depends-on (use nil use-p) import-from export
+					 (code nil code-p)
                                          (without-tests nil) (verbose t) &allow-other-keys)
   "Generate a skeleton."
   (declare (ignore name long-name version description long-description author maintainer
@@ -25,6 +26,13 @@
 
   ;; Ensure `path' ends with a slash(/).
   (setf path (uiop:ensure-directory-pathname path))
+  (if code-p
+      (when (consp code)
+	(setf (getf params :code)
+	      (let ((*print-case* :downcase))
+		(format nil "~{~S~%~}" code))))
+      (setf (getf params :code)
+	    ";; blah blah blah."))
   (unless use-p
     (setf (getf params :use)
 	  (list :cl)))

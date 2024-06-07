@@ -22,4 +22,4 @@
   <%- @endif %>)
 (in-package #:<% @var name %>)
 
-;; blah blah blah.
+<% @var code %>
